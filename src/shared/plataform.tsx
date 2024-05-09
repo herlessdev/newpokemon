@@ -5,7 +5,12 @@ import { motion } from "framer-motion";
 type Props = {
   children: ReactNode;
   className?: string;
-  animation?: AnimationProps;
+  animation?: {
+    initial?: Record<string, unknown>;
+    animate?: Record<string, unknown>;
+    exit?: Record<string, unknown>;
+    transition?: Record<string, unknown>;
+  };
 };
 const Plataform = ({ children, className, animation }: Props) => {
   const { initial, animate, exit, transition } = animation || {};

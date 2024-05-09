@@ -9,7 +9,7 @@ export default function ShowWords({ name }: Props) {
   const [frameIndex, setFrameIndex] = useState(0);
   const [saltito, setSaltito] = useState(true);
   const frameCount = 3;
-  const spriteBruno = "https://i.imgur.com/6oa9is6.png";
+  const spriteBruno = "/newpokemon/sprites/sprite-bruno.png";
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -18,6 +18,7 @@ export default function ShowWords({ name }: Props) {
     }, 150);
 
     return () => clearInterval(intervalId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frameIndex]);
 
   return (

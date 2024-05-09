@@ -4,6 +4,7 @@ import tailwindcss from 'tailwindcss'; // Importa Tailwind CSS como un plugin de
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/newpokemon/',
   plugins: [react()],
   css: {
     postcss: {

@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState, Dispatch, SetStateAction } from "react";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import cx from "../../../lib/cx";
 
@@ -27,19 +26,25 @@ interface Props {
   name: string;
   setName: Dispatch<SetStateAction<string>>;
   setStep: Dispatch<SetStateAction<number>>;
-  setIndexDialogue: Dispatch<SetStateAction<number>>
+  setIndexDialogue: Dispatch<SetStateAction<number>>;
 }
-export default function TableKeyboard({ name, setName, setStep, setIndexDialogue }: Props) {
+export default function TableKeyboard({
+  name,
+  setName,
+  setStep,
+  setIndexDialogue,
+}: Props) {
   const [selectedElement, setSelectedElement] =
     useState<ElementoSeleccionado | null>(null);
   const [elementosArray, setElementosArray] = useState<ElementoSeleccionado[]>(
     []
   );
   const refs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const navigate = useNavigate();
 
-  const handleKeyDown = (event: KeyboardEvent) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleKeyDown = (event: any) => {
     const tecla = event.key;
+
     const centroX = selectedElement
       ? (selectedElement.offsetLeft + selectedElement.offsetRight) / 2
       : 0;
@@ -128,7 +133,7 @@ export default function TableKeyboard({ name, setName, setStep, setIndexDialogue
       }
     }
 
-    if (tecla.toLowerCase() === "x") {
+    if (tecla.toLowerCase() === "x" && name.length <= 6) {
       setName(name + selectedElement?.element);
     }
 
@@ -138,7 +143,7 @@ export default function TableKeyboard({ name, setName, setStep, setIndexDialogue
 
     if (tecla === "Enter") {
       setStep(0);
-      setIndexDialogue(14)
+      setIndexDialogue(14);
     }
   };
 
@@ -171,6 +176,7 @@ export default function TableKeyboard({ name, setName, setStep, setIndexDialogue
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedElement, name]);
   return (
     <div

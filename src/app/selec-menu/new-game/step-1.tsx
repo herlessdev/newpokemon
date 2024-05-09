@@ -10,6 +10,7 @@ import { getPokemonById } from "../../../services/get";
 import SelectOption from "../../../shared/select-option";
 import cx from "../../../lib/cx";
 import { useNavigate } from "react-router-dom";
+import { nuevaPartida } from "../../../services/post";
 
 const options = ["BOY", "GIRL"];
 const confirmOptions = ["YES", "NO"];
@@ -45,8 +46,7 @@ const Step1 = ({
   confirmIndexOpt,
   setConfirmIndexOpt,
 }: Props) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [duration, setDuration] = useState(0);
+  const [duration] = useState(0);
   const { displayText, finishedTyping } = useTypingEffect(
     TextModify(dataDialogue[indexDialogue], indexDialogue, name),
     5
@@ -59,18 +59,14 @@ const Step1 = ({
     transition: { duration: 0.5 },
   };
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data, isLoading } = useQuery(
-    "pokemon270",
-    () => getPokemonById(270),
-    {
-      refetchOnWindowFocus: false,
-    }
-  );
+  const { data } = useQuery("pokemon270", () => getPokemonById(270), {
+    refetchOnWindowFocus: false,
+  });
 
   const navigate = useNavigate();
   const handleAnimationComplete = () => {};
   useEffect(() => {
-    const handleKeyDown = (event: { key: string }) => {
+    const handleKeyDown = async (event: { key: string }) => {
       if (
         event.key === "a" &&
         finishedTyping &&
@@ -82,10 +78,14 @@ const Step1 = ({
           setStep(1);
         }
         if (indexDialogue === 20) {
+          const genderOpts = ["BOY", "GIRL"];
+          const gender = genderOpts[confirmIndexOpt];
+
           const userData = {
             name: name,
-            indexOpt: confirmIndexOpt,
+            gender: gender,
           };
+          await nuevaPartida(userData);
           console.log("userData:", userData);
           navigate("/world");
         }
@@ -129,7 +129,7 @@ const Step1 = ({
                 />
               )}
               <img
-                src="/pjs/profesor-abedul.png"
+                src="/newpokemon/pjs/profesor-abedul.png"
                 className="absolute bottom-[35%] left-[40%] h-[185px] w-[210px]"
               />
             </Plataform>
@@ -161,7 +161,7 @@ const Step1 = ({
                       transition={{ duration: 0.5 }}
                     >
                       <img
-                        src="/pjs/bruno.png"
+                        src="/newpokemon/pjs/bruno.png"
                         className="absolute bottom-[35%] left-[50%] translate-x-[-50%] h-[175px] w-[170px]"
                       />
                     </motion.div>
@@ -176,7 +176,7 @@ const Step1 = ({
                       transition={{ duration: 0.5 }}
                     >
                       <img
-                        src="/pjs/aura.png"
+                        src="/newpokemon/pjs/aura.png"
                         className="absolute bottom-[35%] left-[50%] translate-x-[-50%] h-[175px] w-[170px]"
                       />
                     </motion.div>
@@ -202,7 +202,7 @@ const Step1 = ({
                     transition={{ duration: 0.5 }}
                   >
                     <img
-                      src="/pjs/bruno.png"
+                      src="/newpokemon/pjs/bruno.png"
                       className="absolute bottom-[35%] left-[50%] translate-x-[-50%] h-[175px] w-[170px]"
                     />
                   </motion.div>
@@ -227,7 +227,8 @@ const Step1 = ({
       </div>
 
       <DivText className="my-2 w-[740px]">
-        {displayText} {indexDialogue === 14 && `${name} ?`}
+        {displayText}
+        {indexDialogue === 14 && ` ${name} ?`}
         {/*finishedTyping && (
           <motion.div
             animate={{

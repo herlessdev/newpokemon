@@ -40,7 +40,7 @@ const StartGame = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [playVideo]);
+  }, [navigate, playVideo]);
   return (
     <main className="w-full h-full bg-gray-900 flex justify-center items-center">
       {!playVideo && (
@@ -59,7 +59,7 @@ const StartGame = () => {
           autoPlay={true}
           muted={false}
         >
-          <source src="/videoplayback.mp4" type="video/mp4" />
+          <source src="/newpokemon/videoplayback.mp4" type="video/mp4" />
         </video>
       )}
     </main>

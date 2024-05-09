@@ -20,10 +20,7 @@ const SelectOption = ({
         setSelectOpt((prevSelectOpt) => prevSelectOpt - 1);
       } else if (event.key === "ArrowDown" && selectOpt < options.length - 1) {
         setSelectOpt((prevSelectOpt) => prevSelectOpt + 1);
-      } else if (event.key === "a") {
-        if (options[selectOpt] === "NEW GAME") {
-        }
-      }
+      } 
     };
 
     document.addEventListener("keydown", handleKeyDown);
@@ -31,7 +28,7 @@ const SelectOption = ({
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectOpt]);
+  }, [options, selectOpt, setSelectOpt]);
 
   return (
     <div
@@ -46,7 +43,7 @@ const SelectOption = ({
             {opt}
             {selectOpt === i && (
               <img
-                src="/public/icons/arrow-right.svg"
+                src="/newpokemon/icons/arrow-right.svg"
                 className="absolute right-[100%] top-1/2 translate-y-[-50%] w-[25px]"
               />
             )}

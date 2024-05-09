@@ -1,16 +1,43 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import cx from "../../lib/cx";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "react-query";
+import { cargarPartidas } from "../../services/get";
+
+interface OptionMenuProps {
+  PLAYER?: string;
+  TIME?: string;
+  BADGES?: number;
+}
+
+type MenuOption = (string | OptionMenuProps)[];
 
 const SelectMenu = () => {
   const [selectOpt, setSelectOpt] = useState<number>(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const optionsMenu = ["NEW GAME", "OPTIONS"] ;
+  const [optionsMenu, setOptionsMenu] = useState<MenuOption>([
+    "NEW GAME",
+    "OPTIONS",
+  ]);
+  const { isLoading, isError } = useQuery("partidas", cargarPartidas, {
+    refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      const partidasObject = data.map((partida: string[]) => {
+        return {
+          ID: partida[0],
+          PLAYER: partida[1],
+          TIME: "0:00",
+          BADGES: 0,
+        };
+      });
+      setOptionsMenu((prevOptions) => [...partidasObject, ...prevOptions]);
+    },
+  });
+  console.log(optionsMenu);
   const navigate = useNavigate();
 
-  const ChooseOpt = (index: number) => {
+  /*const ChooseOpt = (index: number) => {
     setSelectOpt(index);
-  };
+  };*/
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -22,48 +49,71 @@ const SelectMenu = () => {
       ) {
         setSelectOpt((prevSelectOpt) => prevSelectOpt + 1);
       } else if (event.key === "a") {
-        if(optionsMenu[selectOpt] === 'NEW GAME') {
-          navigate('/select-menu/new-game')
+        if (optionsMenu[selectOpt] === "NEW GAME") {
+          navigate("/select-menu/new-game");
         }
       }
     };
-    const container = containerRef.current;
-
-    const lineHeight = 40;
-    if (container) {
-      container.scrollTop = lineHeight * selectOpt;
-    }
 
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectOpt]);
+  }, [navigate, optionsMenu, selectOpt]);
 
   return (
     <div
       style={{ scrollbarWidth: "none" }}
-      className="flex flex-col px-8 py-2 bg-[#8c92ff] gap-2 w-full h-full overflow-y-[auto]"
+      className="flex flex-col px-8 py-2 bg-[#8c92ff] w-full h-full overflow-hidden relative"
     >
-      {optionsMenu.map((optMenu, i) => (
-        <div
-          key={i}
-          className={cx(
-            "bg-[#736984] cursor-pointer p-2 text-3xl font-[400] font-nova rounded-[8px] border-[#293031] border-4",
-            selectOpt === i
-              ? null
-              : "relative before:absolute before:content-[''] before:bg-[#00000050] before:top-0 before:left-0 before:w-full before:h-full before:z-[999]"
-          )}
-        >
+      <div
+        className="flex flex-col gap-2 absolute w-full px-8 py-2 left-0 top-0"
+        style={{
+          transform: `translateY(-${Math.floor(selectOpt / 3) * 29.5}%)`,
+          transition: "transform 0.3s ease-in-out"
+        }}
+      >
+        {isLoading && <div className="text-[white] px-6">Download Games...</div>}
+        {isError && <div className="text-[red] px-6">An error occurred while loading data.</div>}
+        {optionsMenu.map((optMenu, i) => (
           <div
-            ref={containerRef}
-            className="px-2 py-3 rounded-[5px] bg-[white]"
+            key={i}
+            className={cx(
+              "bg-[#736984] cursor-pointer p-2 text-3xl font-[400] font-nova rounded-[8px] border-[#293031] border-4",
+              selectOpt === i
+                ? null
+                : "relative before:absolute before:content-[''] before:bg-[#00000050] before:top-0 before:left-0 before:w-full before:h-full"
+            )}
           >
-            {optMenu}
+            <div className="px-2 py-3 rounded-[5px] bg-[white]">
+              {typeof optMenu === "string" ? (
+                optMenu
+              ) : (
+                <div style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}>
+                  <p>CONTINUE</p>
+                  <div className="flex gap-6 text-[#2186ff]">
+                    <div className="flex-[1] flex justify-between">
+                      <p>PLAYER</p>
+                      <p>{optMenu.PLAYER}</p>
+                    </div>
+                    <div className="flex-[1] flex flex-col justify-between">
+                      <div className="flex justify-between w-full">
+                        <p>TIME</p>
+                        <p>{optMenu.TIME}</p>
+                      </div>
+                      <div className="flex justify-between w-full">
+                        <p>BADGES</p>
+                        <p>{optMenu.BADGES}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
