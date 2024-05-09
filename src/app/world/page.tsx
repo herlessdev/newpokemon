@@ -143,10 +143,7 @@ const World = () => {
 
   useEffect(() => {
     const nuevoMapa = [...mapa.map((fila) => [...fila])];
-    nuevoMapa[personajeCoordenadas.x][personajeCoordenadas.y]["especie"] = {
-      name: "bruno",
-      about: "block",
-    };
+    nuevoMapa[personajeCoordenadas.x][personajeCoordenadas.y]["especie"] = "bruno"
     setMapa(nuevoMapa);
   }, []);
   return (
