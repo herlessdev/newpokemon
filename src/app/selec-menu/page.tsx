@@ -52,6 +52,9 @@ const SelectMenu = () => {
         if (optionsMenu[selectOpt] === "NEW GAME") {
           navigate("/select-menu/new-game");
         }
+        if(optionsMenu[selectOpt] !== "NEW GAME") {
+          navigate("/world")
+        }
       }
     };
 
