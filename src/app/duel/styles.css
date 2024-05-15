@@ -1,0 +1,19 @@
+.container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+  width: 100%;
+}
+
+.lightning {
+  width: 100px;
+  height: 300px;
+  background: url('https://img.icons8.com/color/48/000000/lightning-bolt--v1.png') no-repeat center center;
+  background-size: contain;
+}
+
+.white-effect {
+  mix-blend-mode: lighten;
+}

@@ -12,7 +12,7 @@
     align-items: center;
     justify-content: center;
     border: 5px solid black;
-    & > div:last-of-type {
+    & > .personaje {
         position: absolute;
         width: 37px;
         z-index: 99;

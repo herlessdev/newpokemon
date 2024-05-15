@@ -4,3 +4,20 @@ body {
   align-items: center;
   min-height: 100vh;
 }
+
+.duel-bg-green {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(
+      to bottom,
+      #e4fac7 0%,
+      #e4fac7 2%,
+      white 1.5%,
+      white 3%
+    );
+}
