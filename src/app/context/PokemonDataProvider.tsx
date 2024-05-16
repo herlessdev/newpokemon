@@ -12,7 +12,7 @@ export const PokemonDataProvider: React.FC<{ children: ReactNode }> = ({
     const loadPokemonData = async () => {
       try {
         const pokemonIdsToLoad = Array.from(
-          { length: 50 },
+          { length: 150 },
           (_, index) => index + 1
         );
         const pokemonDataPromises = pokemonIdsToLoad.map(getPokemonById);

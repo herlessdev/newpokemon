@@ -4,8 +4,15 @@ interface Props {
   lvl: number;
   className: string;
   statePokemonEnemy: string;
+  gender_rate: number;
 }
-const BarPokemon = ({ name, lvl, className, statePokemonEnemy }: Props) => {
+const BarPokemon = ({
+  name,
+  lvl,
+  className,
+  statePokemonEnemy,
+  gender_rate,
+}: Props) => {
   return (
     <div
       className={cx(
@@ -16,11 +23,13 @@ const BarPokemon = ({ name, lvl, className, statePokemonEnemy }: Props) => {
       <div className="flex justify-between">
         <div className="flex text-[13px] items-center">
           {name}
-          <img
-            src="/newpokemon/icons/mars.svg"
-            alt="mars"
-            className="w-3 rotate-[-45deg]"
-          />
+          {gender_rate !== -1 && (
+            <img
+              src="/newpokemon/icons/mars.svg"
+              alt="mars"
+              className="w-3 rotate-[-45deg]"
+            />
+          )}
         </div>
         <div>Lv{lvl}</div>
       </div>
@@ -34,7 +43,7 @@ const BarPokemon = ({ name, lvl, className, statePokemonEnemy }: Props) => {
             />
           )}
           {statePokemonEnemy === "paralize" && (
-            <div className="bg-[#adb934] text-[white] px-1 text-xs rounded-md">
+            <div className="bg-[#adb934] text-[white] px-1 text-[9px] rounded-md">
               PAR
             </div>
           )}

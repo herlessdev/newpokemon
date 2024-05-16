@@ -64,7 +64,7 @@ export function probability(probability: number) {
   return resultProb
 }
 
-export const listPokemon = [1, 4, 7, 50, 10, 20, 30, 40, 44, 48];
+export const listPokemon = [1, 4, 7, 150, 10, 19, 35, 27, 43, 48];
 
 
 export const pasto = new Superficie("pasto", 0, "yes");

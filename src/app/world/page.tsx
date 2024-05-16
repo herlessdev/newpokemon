@@ -4,6 +4,7 @@ import { Bruno, mapaProps, probability } from "../../data/data";
 import { useNavigate } from "react-router-dom";
 import useTypingEffect from "../../hooks/useTypingEffect";
 import DivText from "../../shared/div-text";
+import useToggle from "../../hooks/useToggle";
 
 type PersonajeCoordenadas = {
   x: number;
@@ -31,10 +32,12 @@ const World = ({
   const [scaleX, setScaleX] = useState("");
   const [backgroundImagePosition, setBackgroundPosition] = useState("");
   const [debounce, setDebounce] = useState(false);
+  const [timeAnimation] = useState(50);
   const spriteBruno = "/newpokemon/sprites/sprite-bruno.png";
   const [text] = useState("");
   const [event, setEvent] = useState(false);
   const { displayText, finishedTyping } = useTypingEffect(text, 20);
+  const { isOpen, onToggle } = useToggle();
   const navigate = useNavigate();
 
   const moverPersonaje = (deltaX: number, deltaY: number) => {
@@ -72,13 +75,16 @@ const World = ({
         case "ArrowUp":
           setDirection("Up");
           if (direction === "Up") {
-            setBackgroundPosition("-70px -35px");
-            setTimeout(() => {
+            if (isOpen) {
+              setBackgroundPosition("-285.5px -35px");
+              onToggle();
+            } else {
               setBackgroundPosition("-242.5px -35px");
-            }, 33);
+              onToggle();
+            }
             setTimeout(() => {
               setBackgroundPosition("-70px -35px");
-            }, 50);
+            }, timeAnimation);
             moverPersonaje(0, -1);
           } else {
             setBackgroundPosition("-70px -35px");
@@ -89,13 +95,16 @@ const World = ({
           setScaleX("scaleX(1)");
 
           if (direction === "Left") {
-            setBackgroundPosition("-370px -35px");
-            setTimeout(() => {
+            if (!isOpen) {
+              setBackgroundPosition("-370px -35px");
+              onToggle();
+            } else {
               setBackgroundPosition("-325px -35px");
-            }, 33);
+              onToggle();
+            }
             setTimeout(() => {
               setBackgroundPosition("-109.5px -35px");
-            }, 50);
+            }, timeAnimation);
             moverPersonaje(-1, 0);
           } else {
             setBackgroundPosition("-109.5px -35px");
@@ -107,13 +116,16 @@ const World = ({
           setScaleX("scaleX(-1)");
 
           if (direction === "Right") {
-            setBackgroundPosition("-370px -35px");
-            setTimeout(() => {
+            if (!isOpen) {
+              setBackgroundPosition("-370px -35px");
+              onToggle();
+            } else {
               setBackgroundPosition("-325px -35px");
-            }, 33);
+              onToggle();
+            }
             setTimeout(() => {
               setBackgroundPosition("-109.5px -35px");
-            }, 50);
+            }, timeAnimation);
             moverPersonaje(1, 0);
           } else {
             setBackgroundPosition("-109.5px -35px");
@@ -123,13 +135,16 @@ const World = ({
           setDirection("Down");
 
           if (direction === "Down") {
-            setBackgroundPosition("-150px -35px");
-            setTimeout(() => {
+            if (!isOpen) {
+              setBackgroundPosition("-150px -35px");
+              onToggle();
+            } else {
               setBackgroundPosition("-195px -35px");
-            }, 33);
+              onToggle();
+            }
             setTimeout(() => {
               setBackgroundPosition("-30.5px -35px");
-            }, 50);
+            }, timeAnimation);
             moverPersonaje(0, 1);
           } else {
             setBackgroundPosition("-30.5px -35px");
@@ -176,7 +191,14 @@ const World = ({
         clearTimeout(timeoutDuel);
       };
     }
-  }, [personajeCoordenadas, event, finishedTyping, navigate]);
+  }, [
+    personajeCoordenadas,
+    event,
+    finishedTyping,
+    navigate,
+    mapa,
+    generateRandomNumber,
+  ]);
 
   return (
     <div id="world">

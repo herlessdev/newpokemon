@@ -121,6 +121,7 @@ const Duel = ({ randomNumber }: Props) => {
             )}
 
           <BarPokemon
+            gender_rate={pokemonData?.[pokemonEnemy]?.gender_rate}
             statePokemonEnemy={statePokemonEnemy ?? ""}
             name={pokemonData?.[pokemonEnemy]?.name.toUpperCase()}
             lvl={26}
