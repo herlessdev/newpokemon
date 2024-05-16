@@ -32,7 +32,6 @@ const SelectMenu = () => {
       setOptionsMenu((prevOptions) => [...partidasObject, ...prevOptions]);
     },
   });
-  console.log(optionsMenu);
   const navigate = useNavigate();
 
   /*const ChooseOpt = (index: number) => {

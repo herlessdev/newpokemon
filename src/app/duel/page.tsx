@@ -3,7 +3,7 @@ import cx from "../../lib/cx";
 import DivText from "../../shared/div-text";
 import PlatformDuel from "../../shared/platform-duel";
 import { PokemonDataContext } from "../context/PokemonDataProvider";
-import { listPokemon } from "../../data/data";
+import { listPokemon, probability } from "../../data/data";
 import useTypingEffect from "../../hooks/useTypingEffect";
 import BarPokemon from "./bar-pokemon";
 import SelectOption from "../../shared/select-option";
@@ -15,6 +15,9 @@ interface Props {
   randomNumber: number | null;
 }
 const Duel = ({ randomNumber }: Props) => {
+  const [statePokemonEnemy, setStatePokemonEnemy] = useState<string | null>(
+    null
+  );
   const [textDuel, setTextDuel] = useState("");
   const [sequence, setSequence] = useState("inicio");
   const [selectOpt, setSelectOpt] = useState(0);
@@ -24,7 +27,7 @@ const Duel = ({ randomNumber }: Props) => {
   const pokemonData = useContext<any>(PokemonDataContext);
   const pokemonEnemy = listPokemon[randomNumber ?? 0] - 1;
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (sequence === "inicio") {
       if (pokemonData && randomNumber !== null && !finishedTyping) {
@@ -44,7 +47,13 @@ const Duel = ({ randomNumber }: Props) => {
     }
     if (sequence === "effect" && finishedTyping) {
       setTimeout(() => {
-        setTextDuel("PIKACHU ha paralizado a su oponente");
+        if (probability(0.2)) {
+          setTextDuel("PIKACHU ha paralizado a su oponente");
+          setStatePokemonEnemy("paralize");
+        } else {
+          setTextDuel(" ");
+        }
+
         setSequence("trans-options");
       }, 500);
     }
@@ -54,10 +63,15 @@ const Duel = ({ randomNumber }: Props) => {
         setSequence("options");
       }, 500);
     }
-    if(sequence === "receive-attack") {
+    if (sequence === "receive-attack") {
       setTimeout(() => {
-        setTextDuel("Pokemon enemigo ataca");
-        setSequence("trans-options")
+        if (statePokemonEnemy === "paralize") {
+          setTextDuel("Pokemon enemigo se encuentra paralizado");
+          setSequence("trans-options");
+        } else {
+          setTextDuel("Pokemon enemigo ataca");
+          setSequence("trans-options");
+        }
       }, 500);
     }
   }, [pokemonData, finishedTyping]);
@@ -85,11 +99,10 @@ const Duel = ({ randomNumber }: Props) => {
     };
   }, [sequence, selectOpt, selectOptFight, navigate]);
 
-  console.log(sequence)
   return (
     <div className="relative w-full h-full">
       <div className={cx("duel-bg-green")}>
-        <PlatformDuel className="top-1/2 translate-y-[-50%] right-0 absolute">
+        <PlatformDuel className="top-1/4 right-0 absolute">
           {listPokemon &&
             randomNumber != null &&
             listPokemon[randomNumber] != null && (
@@ -106,12 +119,14 @@ const Duel = ({ randomNumber }: Props) => {
                 )}
               />
             )}
+
+          <BarPokemon
+            statePokemonEnemy={statePokemonEnemy ?? ""}
+            name={pokemonData?.[pokemonEnemy]?.name.toUpperCase()}
+            lvl={26}
+            className={"absolute bottom-[125%] right-[125%]"}
+          />
         </PlatformDuel>
-        <BarPokemon
-          name={pokemonData?.[pokemonEnemy]?.name.toUpperCase()}
-          lvl={26}
-          className={"absolute"}
-        />
 
         <PlatformDuel className="top-1/2 translate-y-[50%] left-0 absolute">
           <img
@@ -126,10 +141,11 @@ const Duel = ({ randomNumber }: Props) => {
             )}
           />
         </PlatformDuel>
+
         {sequence === "attack" && (
           <div className="container">
             <motion.div
-              className="lightning right-[17.5%] absolute top-0"
+              className="lightning right-[17.5%] absolute top-[-20%]"
               animate={{
                 translateY: [0, 20, 0],
                 opacity: [1, 0],
@@ -144,6 +160,7 @@ const Duel = ({ randomNumber }: Props) => {
             />
           </div>
         )}
+
         <DivText className="bottom-0 absolute w-full">
           {sequence !== "options" && sequence !== "fight" && displayText}
           {sequence === "options" && (
@@ -161,7 +178,7 @@ const Duel = ({ randomNumber }: Props) => {
             <SelectOption
               selectOpt={selectOptFight}
               setSelectOpt={setSelectOptFight}
-              options={["IMPACTRUENO", "PENDEJOMUMU"]}
+              options={["IMPACTRUENO", "-"]}
               className="w-full absolute right-0 top-0 p-4 border-[7px] rounded-[8px] text-3xl font-mono"
             />
           )}
