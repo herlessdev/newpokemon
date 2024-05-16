@@ -18,7 +18,7 @@ const Step2 = ({ setStep, setIndexDialogue, name, setName }: Props) => {
       <div className="h-8 bg-[#1071e7] flex gap-4 font-semibold text-lg">
         <div className="flex items-center text-[white]">
           <img
-            src="/icons/cross-shape.svg"
+            src="/newpokemon/icons/cross-shape.svg"
             alt="cross-shape"
             className="h-[25px]"
           />{" "}
