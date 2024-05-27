@@ -9,6 +9,7 @@ import { PokemonDataProvider } from "./app/context/PokemonDataProvider";
 import useRandomNumber from "./hooks/useRandomNumber";
 import { useState } from "react";
 import crearSeed from "./data/data";
+import Options from "./app/selec-menu/options/page";
 
 function App() {
   const { randomNumber, generateRandomNumber } = useRandomNumber();
@@ -25,7 +26,8 @@ function App() {
         <Routes>
           <Route path="/" element={<StartGame />} />
           <Route path="/select-menu" element={<SelectMenu />} />
-          <Route path="select-menu/new-game" element={<NewGame />} />
+          <Route path="/select-menu/new-game" element={<NewGame />} />
+          <Route path="/options" element={<Options />} />
           <Route
             path="/world"
             element={<World mapa={mapa} setMapa={setMapa} personajeCoordenadas={personajeCoordenadas} setPersonajeCoordenadas={setPersonajeCoordenadas} randomNumber={randomNumber} generateRandomNumber={generateRandomNumber} />}

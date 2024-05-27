@@ -58,6 +58,10 @@ export function transformXP(xp: number) {
   return raizCubica;
 }
 
+export function getRandomInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
 export function probability(probability: number) {
   
   const resultProb = Math.random() < probability

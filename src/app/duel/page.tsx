@@ -10,6 +10,7 @@ import SelectOption from "../../shared/select-option";
 import { motion } from "framer-motion";
 import "./styles.css";
 import { useNavigate } from "react-router-dom";
+import { Pokemon } from "../../data/types";
 
 interface Props {
   randomNumber: number | null;
@@ -25,9 +26,12 @@ const Duel = ({ randomNumber }: Props) => {
   const { displayText, finishedTyping } = useTypingEffect(textDuel, 20);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pokemonData = useContext<any>(PokemonDataContext);
-  const pokemonEnemy = listPokemon[randomNumber ?? 0] - 1;
+  const pokemonEnemy = new Pokemon(
+    listPokemon[randomNumber ?? 0] - 1,
+    10,
+    pokemonData[listPokemon[randomNumber ?? 0]]?.stats?.[0].base_stat
+  );
   const navigate = useNavigate();
-
   useEffect(() => {
     if (sequence === "inicio") {
       if (pokemonData && randomNumber !== null && !finishedTyping) {
@@ -109,21 +113,25 @@ const Duel = ({ randomNumber }: Props) => {
               <img
                 alt="pokemon-enemy"
                 src={
-                  pokemonData[pokemonEnemy]?.sprites?.versions?.[
+                  pokemonData[pokemonEnemy.number]?.sprites?.versions?.[
                     "generation-iii"
                   ]?.emerald?.["front_default"]
                 }
                 className={cx(
-                  "w-[100px] bottom-0 translate-y-[-25%] left-1/2 absolute translate-x-[-50%]",
-                  sequence === "attack" ? "opacity-[80%] rounded-full" : ""
+                  "w-[100px] bottom-0 translate-y-[-25%] left-1/2 absolute translate-x-[-50%]"
                 )}
+                style={{
+                  transition: "filter 0.3s",
+                  filter:
+                    sequence === "attack" ? "brightness(0) invert(1)" : "",
+                }}
               />
             )}
 
           <BarPokemon
-            gender_rate={pokemonData?.[pokemonEnemy]?.gender_rate}
+            gender_rate={pokemonData?.[pokemonEnemy.number]?.gender_rate}
             statePokemonEnemy={statePokemonEnemy ?? ""}
-            name={pokemonData?.[pokemonEnemy]?.name.toUpperCase()}
+            name={pokemonData?.[pokemonEnemy.number]?.name.toUpperCase()}
             lvl={26}
             className={"absolute bottom-[125%] right-[125%]"}
           />

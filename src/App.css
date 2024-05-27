@@ -21,3 +21,15 @@ body {
       white 3%
     );
 }
+
+.border-options-1 {
+  background-color: #736984;
+  padding: 8px;
+  font-size: 1.875rem; 
+  line-height: 2.25rem;
+  font: 400;
+  font-family: 'Nova Slim'; 
+  border-radius: 8px;
+  border: 4px solid #293031;
+  text-shadow: 2px 2px 4px #ffb652;
+}
