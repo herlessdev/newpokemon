@@ -31,7 +31,8 @@ export async function getMoveById(id: number) {
 }
 
 export async function cargarPartidas() {
-  const response = await fetch(`${host}/api/v1/usuarios`);
+  const response = await fetch(`${host}/api/v1/users`);
+  
   if (!response.ok) {
     throw new Error("No se pudo cargar las partidas");
   }
@@ -40,7 +41,7 @@ export async function cargarPartidas() {
 }
 
 export async function cargarPartidaByID(id: number) {
-  const response = await fetch(`${host}/api/v1/usuarios/${id}`);
+  const response = await fetch(`${host}/api/v1/users/${id}`);
   if (!response.ok) {
     throw new Error(`No se pudo obtener la partida con el ID ${id}`);
   }

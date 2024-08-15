@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import cx from "../../lib/cx";
 import DivText from "../../shared/div-text";
 import PlatformDuel from "../../shared/platform-duel";
-import { PokemonDataContext } from "../context/PokemonDataProvider";
+import { PokemonDataContext } from "../../context/PokemonDataProvider";
 import { listPokemon, probability } from "../../data/data";
 import useTypingEffect from "../../hooks/useTypingEffect";
 import BarPokemon from "./bar-pokemon";
@@ -16,9 +16,7 @@ interface Props {
   randomNumber: number | null;
 }
 const Duel = ({ randomNumber }: Props) => {
-  const [statePokemonEnemy, setStatePokemonEnemy] = useState<string | null>(
-    null
-  );
+  
   const [textDuel, setTextDuel] = useState("");
   const [sequence, setSequence] = useState("inicio");
   const [selectOpt, setSelectOpt] = useState(0);
@@ -26,12 +24,14 @@ const Duel = ({ randomNumber }: Props) => {
   const { displayText, finishedTyping } = useTypingEffect(textDuel, 20);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pokemonData = useContext<any>(PokemonDataContext);
-  const pokemonEnemy = new Pokemon(
+  const initialEnemy = new Pokemon(
     listPokemon[randomNumber ?? 0] - 1,
     10,
     pokemonData[listPokemon[randomNumber ?? 0]]?.stats?.[0].base_stat
   );
+  const [pokemonEnemy] = useState<Pokemon>(initialEnemy);
   const navigate = useNavigate();
+
   useEffect(() => {
     if (sequence === "inicio") {
       if (pokemonData && randomNumber !== null && !finishedTyping) {
@@ -53,7 +53,7 @@ const Duel = ({ randomNumber }: Props) => {
       setTimeout(() => {
         if (probability(0.2)) {
           setTextDuel("PIKACHU ha paralizado a su oponente");
-          setStatePokemonEnemy("paralize");
+          pokemonEnemy.setStatus("paralyzed");
         } else {
           setTextDuel(" ");
         }
@@ -69,14 +69,30 @@ const Duel = ({ randomNumber }: Props) => {
     }
     if (sequence === "receive-attack") {
       setTimeout(() => {
-        if (statePokemonEnemy === "paralize") {
+        if (pokemonEnemy.status === "paralyzed") {
           setTextDuel("Pokemon enemigo se encuentra paralizado");
           setSequence("trans-options");
         } else {
-          setTextDuel("Pokemon enemigo ataca");
-          setSequence("trans-options");
+          if (pokemonEnemy.stats.current_hp <= 0) {
+            setTextDuel("Pokemon enemigo se ha debilitado");
+            setSequence("give-experience");
+          } else {
+            setTextDuel("Pokemon enemigo ataca");
+            setSequence("trans-options");
+          }
         }
       }, 500);
+    }
+    if (sequence === "give-experience") {
+      setTimeout(() => {
+        setTextDuel("Has ganado 500 xp");
+        setSequence("finish-duel");
+      }, 1000);
+    }
+    if (sequence === "finish-duel") {
+      setTimeout(() => {
+        navigate("/world");
+      }, 1250);
     }
   }, [pokemonData, finishedTyping]);
 
@@ -92,6 +108,7 @@ const Duel = ({ randomNumber }: Props) => {
         if (sequence === "fight" && selectOptFight === 0) {
           setSequence("attack");
           setTextDuel("PIKACHU a lanzado un impactrueno");
+          pokemonEnemy.takeDamage(5);
         }
       }
     };
@@ -113,7 +130,7 @@ const Duel = ({ randomNumber }: Props) => {
               <img
                 alt="pokemon-enemy"
                 src={
-                  pokemonData[pokemonEnemy.number]?.sprites?.versions?.[
+                  pokemonData[pokemonEnemy.pokemon_number]?.sprites?.versions?.[
                     "generation-iii"
                   ]?.emerald?.["front_default"]
                 }
@@ -129,11 +146,13 @@ const Duel = ({ randomNumber }: Props) => {
             )}
 
           <BarPokemon
-            gender_rate={pokemonData?.[pokemonEnemy.number]?.gender_rate}
-            statePokemonEnemy={statePokemonEnemy ?? ""}
-            name={pokemonData?.[pokemonEnemy.number]?.name.toUpperCase()}
+            gender_rate={pokemonData?.[pokemonEnemy.pokemon_number]?.gender_rate}
+            statePokemonEnemy={pokemonEnemy?.status}
+            name={pokemonData?.[pokemonEnemy.pokemon_number]?.name.toUpperCase()}
             lvl={26}
             className={"absolute bottom-[125%] right-[125%]"}
+            max_hp={pokemonEnemy.stats.max_hp}
+            current_hp={pokemonEnemy.stats.current_hp}
           />
         </PlatformDuel>
 
@@ -148,6 +167,15 @@ const Duel = ({ randomNumber }: Props) => {
             className={cx(
               "w-[100px] bottom-0 translate-y-[-25%] left-1/2 absolute translate-x-[-50%]"
             )}
+          />
+          <BarPokemon
+            gender_rate={pokemonData?.[pokemonEnemy.pokemon_number]?.gender_rate}
+            statePokemonEnemy={pokemonEnemy?.status}
+            name={pokemonData?.[pokemonEnemy?.pokemon_number]?.name.toUpperCase()}
+            lvl={26}
+            className={"absolute bottom-[50%] right-[-75%]"}
+            max_hp={pokemonEnemy.stats.max_hp}
+            current_hp={pokemonEnemy.stats.current_hp}
           />
         </PlatformDuel>
 

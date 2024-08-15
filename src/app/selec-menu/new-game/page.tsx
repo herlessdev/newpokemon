@@ -8,7 +8,7 @@ const NewGame = () => {
   const [confirmIndexOpt, setConfirmIndexOpt] = useState(0);
   const [indexDialogue, setIndexDialogue] = useState(0);
   const [name, setName] = useState("");
-
+  console.log(name);
   return (
     <div className="w-full h-full">
       {step === 0 && (

@@ -39,8 +39,18 @@ export class Element extends Personaje {
   }
 }
 
+export type StatusCondition =
+  | "none"
+  | "paralyzed"
+  | "poisoned"
+  | "badly poisoned"
+  | "burned"
+  | "frozen"
+  | "sleeping";
+
 export class Pokemon {
-  number: number;
+  pokemon_id?: number;
+  pokemon_number: number;
   level: number;
   baseHP: number;
   ivs: {
@@ -59,10 +69,19 @@ export class Pokemon {
     specialDefense: number;
     speed: number;
   };
-  stats: { hp: number };
+  stats: { max_hp: number; current_hp: number };
+  status: StatusCondition;
+  xp: number;
 
-  constructor(number: number, level: number, baseHP: number) {
-    this.number = number;
+  constructor(
+    pokemon_number: number,
+    level: number,
+    baseHP: number,
+    xp: number,
+    pokemon_id?: number,
+  ) {
+    this.pokemon_id = pokemon_id;
+    this.pokemon_number = pokemon_number;
     this.level = level;
     this.baseHP = baseHP;
     this.ivs = {
@@ -82,12 +101,14 @@ export class Pokemon {
       speed: 0,
     };
     this.stats = this.calculateStats();
+    this.status = "none";
+    this.xp = xp
   }
 
   calculateStats() {
-    const hp = this.calculateHP();
-
-    return { hp };
+    const max_hp = this.calculateHP();
+    const current_hp = max_hp;
+    return { max_hp, current_hp };
   }
   calculateHP() {
     const baseHP = 50;
@@ -95,5 +116,12 @@ export class Pokemon {
     const ev = this.evs.hp;
     const level = this.level;
     return 10 + Math.floor((level / 100) * (baseHP * 2 + iv + ev));
+  }
+
+  takeDamage(damage: number) {
+    this.stats.current_hp = Math.max(this.stats.current_hp - damage, 0); // Ensure HP does not go below 0
+  }
+  setStatus(newStatus: StatusCondition) {
+    this.status = newStatus;
   }
 }

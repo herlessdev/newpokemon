@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState, ReactNode } from "react";
-import { getPokemonById } from "../../services/get";
+import { getPokemonById } from "../services/get";
 
 export const PokemonDataContext = createContext<unknown>([]);
 

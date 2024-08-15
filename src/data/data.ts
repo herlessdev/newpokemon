@@ -24,7 +24,6 @@ export default function crearSeed() {
     mapa.push(fila);
   }
   mapa[0][10]= {
-    be: null,
     plant: null,
     superficie: pasto
   }
@@ -45,12 +44,11 @@ export default function crearSeed() {
     superficie: pasto,
     be: rock
   }
-
-
   return mapa;
 }
 
-export const host = "https://backendpokemon.onrender.com";
+//export const host = "https://backendpokemon.onrender.com";
+export const host = "http://127.0.0.1:3000"
 
 export function transformXP(xp: number) {
   if (xp === 0) return 1;
@@ -77,6 +75,9 @@ export const salto_inicio = new Superficie("salto_inicio", 1, "no");
 export const salto_continue = new Superficie("salto_continue", 1, "jump");
 export const salto_fin = new Superficie("salto_fin", 1, "no");
 
-export const Bruno = new Personaje("bruno", 99, "no")
+export const bruno = new Personaje("bruno", 99, "no")
 export const rock = new Element("rock", 1, "no");
 export const hierva = new Plant("hierva", 1);
+export const three_ld = new Element("three_ld", 1, "no")
+export const three_rd = new Element("three_rd", 1, "no")
+

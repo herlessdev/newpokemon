@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import "./style.css";
-import { Bruno, mapaProps, probability } from "../../data/data";
+import crearSeed, { bruno, mapaProps, probability } from "../../data/data";
 import { useNavigate } from "react-router-dom";
 import useTypingEffect from "../../hooks/useTypingEffect";
 import DivText from "../../shared/div-text";
@@ -49,20 +49,29 @@ const World = ({
       newPosX < mapa.length &&
       newPosY >= 0 &&
       newPosY < mapa[0].length &&
-      mapa[newPosX][newPosY].superficie?.available === "yes" &&
       mapa[newPosX][newPosY].be?.available !== "no"
     ) {
       const nuevoMapa = [...mapa.map((fila) => [...fila])];
       const x: number = personajeCoordenadas.x;
       const y: number = personajeCoordenadas.y;
-
       mapa[x][y].be = null;
 
-      nuevoMapa[newPosX][newPosY].be = Bruno;
-      setMapa(nuevoMapa);
-      setPersonajeCoordenadas({ x: newPosX, y: newPosY });
+      if (mapa[newPosX][newPosY].superficie?.available === "yes") {
+        nuevoMapa[newPosX][newPosY].be = bruno;
+        setMapa(nuevoMapa);
+        setPersonajeCoordenadas({ x: newPosX, y: newPosY });
+      }
+      if (mapa[newPosX][newPosY].superficie?.available === "jump") {
+        nuevoMapa[newPosX][newPosY + 1].be = bruno;
+        setMapa(nuevoMapa);
+        setPersonajeCoordenadas({ x: newPosX, y: newPosY + 1 });
+      }
+      if (mapa[newPosX][newPosY].superficie?.available === "map") {
+        /*change map*/
+      }
     }
   };
+
   useEffect(() => {
     if (debounce) {
       return;
@@ -169,7 +178,7 @@ const World = ({
 
   useEffect(() => {
     const nuevoMapa = [...mapa.map((fila) => [...fila])];
-    nuevoMapa[personajeCoordenadas.x][personajeCoordenadas.y].be = Bruno;
+    nuevoMapa[personajeCoordenadas.x][personajeCoordenadas.y].be = bruno;
     setMapa(nuevoMapa);
   }, []);
 
@@ -177,7 +186,7 @@ const World = ({
     if (
       mapa[personajeCoordenadas.x][personajeCoordenadas.y].plant?.name ===
         "hierva" &&
-      probability(0.25)
+      probability(0.2)
     ) {
       setEvent(true);
     }
@@ -227,11 +236,11 @@ const World = ({
                       src={"/newpokemon/plant/" + y.plant.name + ".png"}
                     />
                   )}
-                  {y.be?.name === "rock" && (
+                  {y.be?.name && y.be?.name !== "bruno" && (
                     <img
                       width="100%"
                       alt={j.toString()}
-                      src={"/newpokemon/elements/" + y.be.name + ".png"}
+                      src={"/newpokemon/elements/" + y?.be?.name + ".png"}
                     />
                   )}
                 </div>

@@ -1,4 +1,10 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import useTypingEffect from "../../../hooks/useTypingEffect";
 import DivGradient from "../../../shared/div-gradient";
 import Plataform from "../../../shared/plataform";
@@ -10,7 +16,9 @@ import { getPokemonById } from "../../../services/get";
 import SelectOption from "../../../shared/select-option";
 import cx from "../../../lib/cx";
 import { useNavigate } from "react-router-dom";
-import { nuevaPartida } from "../../../services/post";
+import { addPokemon, nuevaPartida } from "../../../services/post";
+import { Pokemon } from "../../../data/types";
+import { PokemonDataContext } from "../../../context/PokemonDataProvider";
 
 const options = ["BOY", "GIRL"];
 const confirmOptions = ["YES", "NO"];
@@ -46,7 +54,11 @@ const Step1 = ({
   confirmIndexOpt,
   setConfirmIndexOpt,
 }: Props) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pokemonData = useContext<any>(PokemonDataContext);
+
   const [duration] = useState(0);
+
   const { displayText, finishedTyping } = useTypingEffect(
     TextModify(dataDialogue[indexDialogue], indexDialogue, name),
     5
@@ -64,6 +76,7 @@ const Step1 = ({
   });
 
   const navigate = useNavigate();
+
   const handleAnimationComplete = () => {};
   useEffect(() => {
     const handleKeyDown = async (event: { key: string }) => {
@@ -85,8 +98,14 @@ const Step1 = ({
             name: name,
             gender: gender,
           };
+          const initialPokemon = new Pokemon(            
+            25,
+            10,
+            pokemonData[25]?.stats?.[0].base_stat,
+            1000
+          );
           await nuevaPartida(userData);
-          console.log("userData:", userData);
+          await addPokemon(initialPokemon);
           navigate("/world");
         }
       }

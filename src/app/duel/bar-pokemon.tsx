@@ -5,6 +5,8 @@ interface Props {
   className: string;
   statePokemonEnemy: string;
   gender_rate: number;
+  max_hp: number;
+  current_hp: number;
 }
 const BarPokemon = ({
   name,
@@ -12,7 +14,10 @@ const BarPokemon = ({
   className,
   statePokemonEnemy,
   gender_rate,
+  max_hp,
+  current_hp,
 }: Props) => {
+  console.log(current_hp)
   return (
     <div
       className={cx(
@@ -42,7 +47,7 @@ const BarPokemon = ({
               className="w-4"
             />
           )}
-          {statePokemonEnemy === "paralize" && (
+          {statePokemonEnemy === "paralyzed" && (
             <div className="bg-[#adb934] text-[white] px-1 text-[9px] rounded-md">
               PAR
             </div>
@@ -50,7 +55,16 @@ const BarPokemon = ({
         </div>
         <div className="flex items-center rounded-full overflow-hidden bg-[black] pr-0.5">
           <div className="text-[orange] text-[9px] px-1">HP</div>
-          <div className="w-[100px] h-2.5 bg-[#6fd697] border-[white] border-2 rounded-[20px]"></div>
+          {max_hp && (
+            <div className="w-[100px] h-2.5 bg-[#6fd697] border-[white] border-2 rounded-[20px] flex justify-end overflow-hidden">
+              <div
+                className="bg-[black] h-full scale-[-1]"
+                style={{
+                  width: `${((max_hp - current_hp) * 100) / max_hp}%`,
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
