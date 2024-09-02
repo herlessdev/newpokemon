@@ -71,6 +71,7 @@ export class Pokemon {
   };
   stats: { max_hp: number; current_hp: number };
   status: StatusCondition;
+  location: any
   xp: number;
 
   constructor(
@@ -118,10 +119,14 @@ export class Pokemon {
     return 10 + Math.floor((level / 100) * (baseHP * 2 + iv + ev));
   }
 
+  updateCurrentHP(newHP: number) {
+    this.stats.current_hp = Math.max(Math.min(newHP, this.stats.max_hp), 0); // Asegura que current_hp esté dentro de los límites
+  }
+
   takeDamage(damage: number) {
     this.stats.current_hp = Math.max(this.stats.current_hp - damage, 0); // Ensure HP does not go below 0
   }
   setStatus(newStatus: StatusCondition) {
     this.status = newStatus;
-  }
+  } 
 }

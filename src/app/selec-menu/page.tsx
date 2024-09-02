@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import cx from "../../lib/cx";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "react-query";
 import { cargarPartidas } from "../../services/get";
+import { UserDataContext } from "../../context/UserDataProvider";
 
 interface OptionMenuProps {
   PLAYER?: string;
@@ -18,10 +19,11 @@ const SelectMenu = () => {
     "NEW GAME",
     "OPTIONS",
   ]);
+  const { userData, setUserData } = useContext(UserDataContext);
   const { isLoading, isError } = useQuery("partidas", cargarPartidas, {
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
-      console.log(data)
+      console.log(data);
       const partidasObject = data.map((partida: string[]) => {
         return {
           ID: partida[0],
@@ -52,12 +54,15 @@ const SelectMenu = () => {
         if (optionsMenu[selectOpt] === "NEW GAME") {
           navigate("/select-menu/new-game");
         }
-        
-        if(optionsMenu[selectOpt] !== "NEW GAME" && optionsMenu[selectOpt] !== "OPTIONS") {
-          navigate("/world")
+
+        if (
+          optionsMenu[selectOpt] !== "NEW GAME" &&
+          optionsMenu[selectOpt] !== "OPTIONS"
+        ) {
+          navigate("/world");
         }
-        if(optionsMenu[selectOpt] === "OPTIONS") {
-          navigate("/options")
+        if (optionsMenu[selectOpt] === "OPTIONS") {
+          navigate("/options");
         }
       }
     };
@@ -78,11 +83,17 @@ const SelectMenu = () => {
         className="flex flex-col gap-2 absolute w-full px-8 py-2 left-0 top-0"
         style={{
           transform: `translateY(-${Math.floor(selectOpt / 3) * 29.5}%)`,
-          transition: "transform 0.3s ease-in-out"
+          transition: "transform 0.3s ease-in-out",
         }}
       >
-        {isLoading && <div className="text-[white] px-6">Download Games...</div>}
-        {isError && <div className="text-[red] px-6">An error occurred while loading data.</div>}
+        {isLoading && (
+          <div className="text-[white] px-6">Download Games...</div>
+        )}
+        {isError && (
+          <div className="text-[red] px-6">
+            An error occurred while loading data.
+          </div>
+        )}
         {optionsMenu.map((optMenu, i) => (
           <div
             key={i}
@@ -120,7 +131,7 @@ const SelectMenu = () => {
             </div>
           </div>
         ))}
-      </div>      
+      </div>
     </div>
   );
 };

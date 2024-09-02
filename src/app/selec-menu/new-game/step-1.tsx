@@ -104,6 +104,7 @@ const Step1 = ({
             pokemonData[25]?.stats?.[0].base_stat,
             1000
           );
+          console.log(initialPokemon)
           await nuevaPartida(userData);
           await addPokemon(initialPokemon);
           navigate("/world");
