@@ -3,12 +3,18 @@ import App from "./App.tsx";
 import "./index.css";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { HashRouter } from "react-router-dom";
+import { UserDataProvider } from "./context/UserDataProvider.tsx";
+import { PokemonDataProvider } from "./context/PokemonDataProvider.tsx";
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <HashRouter >
+  <HashRouter>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <UserDataProvider>
+        <PokemonDataProvider>
+          <App />
+        </PokemonDataProvider>
+      </UserDataProvider>
     </QueryClientProvider>
   </HashRouter>
 );

@@ -105,8 +105,9 @@ const Step1 = ({
             1000
           );
           console.log(initialPokemon)
-          await nuevaPartida(userData);
-          await addPokemon(initialPokemon);
+          const userResponse = await nuevaPartida(userData);
+          const user_id = userResponse.user_id;
+          await addPokemon( user_id, initialPokemon);
           navigate("/world");
         }
       }

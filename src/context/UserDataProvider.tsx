@@ -1,6 +1,6 @@
 import React, { createContext, useState, ReactNode } from "react";
 
-export const UserDataContext = createContext<unknown>([]);
+export const UserDataContext = createContext<any>([]);
 
 export const UserDataProvider: React.FC<{ children: ReactNode }> = ({
   children,
@@ -8,9 +8,8 @@ export const UserDataProvider: React.FC<{ children: ReactNode }> = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userData, setUserData] = useState<any>([]);
   return (
-    <UserDataContext.Provider value={userData}>
+    <UserDataContext.Provider value={{ userData, setUserData }}>
       {children}
     </UserDataContext.Provider>
   );
 };
-

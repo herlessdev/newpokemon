@@ -1,10 +1,17 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import "./style.css";
 import crearSeed, { bruno, mapaProps, probability } from "../../data/data";
 import { useNavigate } from "react-router-dom";
 import useTypingEffect from "../../hooks/useTypingEffect";
 import DivText from "../../shared/div-text";
 import useToggle from "../../hooks/useToggle";
+import { UserDataContext } from "../../context/UserDataProvider";
 
 type PersonajeCoordenadas = {
   x: number;
@@ -40,6 +47,7 @@ const World = ({
   const { isOpen, onToggle } = useToggle();
   const navigate = useNavigate();
 
+  const { userData } = useContext(UserDataContext);
   const moverPersonaje = (deltaX: number, deltaY: number) => {
     const newPosX = personajeCoordenadas.x + deltaX;
     const newPosY = personajeCoordenadas.y + deltaY;
@@ -208,6 +216,7 @@ const World = ({
     mapa,
     generateRandomNumber,
   ]);
+  console.log(userData);
 
   return (
     <div id="world">

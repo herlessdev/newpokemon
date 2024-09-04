@@ -24,14 +24,14 @@ export async function nuevaPartida(datos: Props) {
   }
 }
 
-export async function addPokemon(datos: Pokemon) {
+export async function addPokemon(user_id: number, pokemon: Pokemon) {
   try {
     const response = await fetch(`${host}/api/v1/pokemons`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(datos),
+      body: JSON.stringify({...pokemon, user_id: user_id }),
     });
     const data = await response.json();
     console.log("Pokemon captured successfully:", data);

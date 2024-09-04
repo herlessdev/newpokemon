@@ -2,10 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import cx from "../../lib/cx";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "react-query";
-import { cargarPartidas } from "../../services/get";
+import { cargarPartidaByID, cargarPartidas } from "../../services/get";
 import { UserDataContext } from "../../context/UserDataProvider";
 
 interface OptionMenuProps {
+  ID?: number;
   PLAYER?: string;
   TIME?: string;
   BADGES?: number;
@@ -14,16 +15,15 @@ interface OptionMenuProps {
 type MenuOption = (string | OptionMenuProps)[];
 
 const SelectMenu = () => {
+  const {setUserData} = useContext(UserDataContext);
   const [selectOpt, setSelectOpt] = useState<number>(0);
   const [optionsMenu, setOptionsMenu] = useState<MenuOption>([
     "NEW GAME",
     "OPTIONS",
   ]);
-  const { userData, setUserData } = useContext(UserDataContext);
   const { isLoading, isError } = useQuery("partidas", cargarPartidas, {
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
-      console.log(data);
       const partidasObject = data.map((partida: string[]) => {
         return {
           ID: partida[0],
@@ -36,13 +36,11 @@ const SelectMenu = () => {
     },
   });
   const navigate = useNavigate();
-
   /*const ChooseOpt = (index: number) => {
     setSelectOpt(index);
   };*/
-
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = async (event: KeyboardEvent) => {
       if (event.key === "ArrowUp" && selectOpt > 0) {
         setSelectOpt((prevSelectOpt) => prevSelectOpt - 1);
       } else if (
@@ -59,6 +57,13 @@ const SelectMenu = () => {
           optionsMenu[selectOpt] !== "NEW GAME" &&
           optionsMenu[selectOpt] !== "OPTIONS"
         ) {
+          const user_id =
+            typeof optionsMenu[selectOpt] === "object" &&
+            optionsMenu[selectOpt] !== null
+              ? optionsMenu[selectOpt].ID
+              : undefined;
+          const partida = await cargarPartidaByID(Number(user_id));
+          setUserData(partida);
           navigate("/world");
         }
         if (optionsMenu[selectOpt] === "OPTIONS") {

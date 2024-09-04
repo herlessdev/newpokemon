@@ -15,11 +15,12 @@ import Options from "./app/selec-menu/options/page";
 import map_1 from "./data/maps";
 
 import { Pokemon } from "./data/types";
-import { UserDataProvider } from "./context/UserDataProvider";
+import { UserDataContext } from "./context/UserDataProvider";
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pokemonData = useContext<any>(PokemonDataContext);
+  const { userData } = useContext(UserDataContext);
   const { randomNumber, generateRandomNumber } = useRandomNumber();
   const [personajeCoordenadas, setPersonajeCoordenadas] = useState({
     x: 0,
@@ -37,38 +38,31 @@ function App() {
       1000
     )
   );
-
   const [mapa, setMapa] = useState(map_1);
+  console.log(userData);
   return (
-    <UserDataProvider>
-      <PokemonDataProvider>
-        <div className="w-[750px] h-[490px] overflow">
-          <Routes>
-            <Route path="/" element={<StartGame />} />
-            <Route path="/select-menu" element={<SelectMenu />} />
-            <Route path="/select-menu/new-game" element={<NewGame />} />
-            <Route path="/options" element={<Options />} />
-            <Route
-              path="/world"
-              element={
-                <World
-                  mapa={mapa}
-                  setMapa={setMapa}
-                  personajeCoordenadas={personajeCoordenadas}
-                  setPersonajeCoordenadas={setPersonajeCoordenadas}
-                  randomNumber={randomNumber}
-                  generateRandomNumber={generateRandomNumber}
-                />
-              }
+    <div className="w-[750px] h-[490px] overflow">
+      <Routes>
+        <Route path="/" element={<StartGame />} />
+        <Route path="/select-menu" element={<SelectMenu />} />
+        <Route path="/select-menu/new-game" element={<NewGame />} />
+        <Route path="/options" element={<Options />} />
+        <Route
+          path="/world"
+          element={
+            <World
+              mapa={mapa}
+              setMapa={setMapa}
+              personajeCoordenadas={personajeCoordenadas}
+              setPersonajeCoordenadas={setPersonajeCoordenadas}
+              randomNumber={randomNumber}
+              generateRandomNumber={generateRandomNumber}
             />
-            <Route
-              path="/duel"
-              element={<Duel randomNumber={randomNumber} />}
-            />
-          </Routes>
-        </div>
-      </PokemonDataProvider>
-    </UserDataProvider>
+          }
+        />
+        <Route path="/duel" element={<Duel randomNumber={randomNumber} />} />
+      </Routes>
+    </div>
   );
 }
 
