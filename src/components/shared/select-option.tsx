@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
-import cx from "../lib/cx";
-
+import cx from "../../lib/cx";
 interface Props {
   options: string[];
   className?: string;
+  classNameOptions?: string;
   selectOpt: number;
   setSelectOpt: Dispatch<SetStateAction<number>>;
 }
@@ -13,6 +13,7 @@ const SelectOption = ({
   selectOpt,
   setSelectOpt,
   className,
+  classNameOptions,
 }: Props) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -20,7 +21,7 @@ const SelectOption = ({
         setSelectOpt((prevSelectOpt) => prevSelectOpt - 1);
       } else if (event.key === "ArrowDown" && selectOpt < options.length - 1) {
         setSelectOpt((prevSelectOpt) => prevSelectOpt + 1);
-      } 
+      }
     };
 
     document.addEventListener("keydown", handleKeyDown);
@@ -37,7 +38,12 @@ const SelectOption = ({
         className
       )}
     >
-      <div className="pl-8 pr-14 py-3 rounded-[5px] bg-[white]">
+      <div
+        className={cx(
+          "pl-8 pr-14 py-3 rounded-[5px] bg-[white] flex flex-col",
+          classNameOptions
+        )}
+      >
         {options.map((opt, i) => (
           <div key={i} className="relative">
             {opt}

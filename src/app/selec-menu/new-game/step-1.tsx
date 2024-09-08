@@ -6,14 +6,14 @@ import {
   useState,
 } from "react";
 import useTypingEffect from "../../../hooks/useTypingEffect";
-import DivGradient from "../../../shared/div-gradient";
-import Plataform from "../../../shared/plataform";
+import DivGradient from "../../../components/shared/div-gradient";
+import Plataform from "../../../components/shared/plataform";
 import { AnimatePresence, motion } from "framer-motion";
-import DivText from "../../../shared/div-text";
+import DivText from "../../../components/shared/div-text";
 import dataDialogue from "./dialogue.placeholder.json";
 import { useQuery } from "react-query";
 import { getPokemonById } from "../../../services/get";
-import SelectOption from "../../../shared/select-option";
+import SelectOption from "../../../components/shared/select-option";
 import cx from "../../../lib/cx";
 import { useNavigate } from "react-router-dom";
 import { addPokemon, nuevaPartida } from "../../../services/post";

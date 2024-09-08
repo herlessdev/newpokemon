@@ -9,9 +9,10 @@ import "./style.css";
 import crearSeed, { bruno, mapaProps, probability } from "../../data/data";
 import { useNavigate } from "react-router-dom";
 import useTypingEffect from "../../hooks/useTypingEffect";
-import DivText from "../../shared/div-text";
+import DivText from "../../components/shared/div-text";
 import useToggle from "../../hooks/useToggle";
 import { UserDataContext } from "../../context/UserDataProvider";
+import SelectOption from "../../components/shared/select-option";
 
 type PersonajeCoordenadas = {
   x: number;
@@ -45,9 +46,18 @@ const World = ({
   const [event, setEvent] = useState(false);
   const { displayText, finishedTyping } = useTypingEffect(text, 20);
   const { isOpen, onToggle } = useToggle();
+  const { isOpen: menuOpen, onToggle: menuOnToggle } = useToggle();
   const navigate = useNavigate();
-
   const { userData } = useContext(UserDataContext);
+  const optionsMenu = [
+    "POKéMON",
+    "BAG",
+    userData.user[1],
+    "SAVE",
+    "OPTION",
+    "EXIT",
+  ];
+  const [indexOptionMenu, setIndexOptionMenu] = useState<number>(0);
   const moverPersonaje = (deltaX: number, deltaY: number) => {
     const newPosX = personajeCoordenadas.x + deltaX;
     const newPosY = personajeCoordenadas.y + deltaY;
@@ -88,6 +98,17 @@ const World = ({
       return;
     }
     const handleKeyDown = (event: { key: string }) => {
+      if (menuOpen) {
+        switch (event.key) {
+          case "x":
+            navigate("/team")
+            break;
+          case "Enter":
+            menuOnToggle()
+            return;
+        }
+        return;
+      }
       switch (event.key) {
         case "ArrowUp":
           setDirection("Up");
@@ -167,6 +188,9 @@ const World = ({
             setBackgroundPosition("-30.5px -35px");
           }
           break;
+        case "Enter":
+          menuOnToggle();
+          break;
         default:
           break;
       }
@@ -182,7 +206,7 @@ const World = ({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [mapa, backgroundImagePosition, debounce, event, direction]);
+  }, [mapa, backgroundImagePosition, debounce, event, direction, menuOpen]);
 
   useEffect(() => {
     const nuevoMapa = [...mapa.map((fila) => [...fila])];
@@ -216,67 +240,77 @@ const World = ({
     mapa,
     generateRandomNumber,
   ]);
-  console.log(userData);
 
   return (
-    <div id="world">
-      <div className="relative before:content-[''] before:w-full before:bg-[black] before:absolute before:left-0 before:z-[9999] before:rounded-[50%]">
-        {mapa &&
-          mapa.map((x, i) => (
-            <div key={i}>
-              {x.map((y, j) => (
-                <div
-                  key={j}
-                  style={{
-                    position: "relative",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundImage: `url(/newpokemon/superface/${y.superficie.name}.png)`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "cover",
-                  }}
-                  className="celda"
-                >
-                  {y.plant && (
-                    <img
-                      width="100%"
-                      alt={j.toString()}
-                      src={"/newpokemon/plant/" + y.plant.name + ".png"}
-                    />
-                  )}
-                  {y.be?.name && y.be?.name !== "bruno" && (
-                    <img
-                      width="100%"
-                      alt={j.toString()}
-                      src={"/newpokemon/elements/" + y?.be?.name + ".png"}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          ))}
+    <>
+      <div id="world" className="relative">
+        <div className="relative before:content-[''] before:w-full before:bg-[black] before:absolute before:left-0 before:z-[9999] before:rounded-[50%]">
+          {mapa &&
+            mapa.map((x, i) => (
+              <div key={i}>
+                {x.map((y, j) => (
+                  <div
+                    key={j}
+                    style={{
+                      position: "relative",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundImage: `url(/newpokemon/superface/${y.superficie.name}.png)`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                    }}
+                    className="celda"
+                  >
+                    {y.plant && (
+                      <img
+                        width="100%"
+                        alt={j.toString()}
+                        src={"/newpokemon/plant/" + y.plant.name + ".png"}
+                      />
+                    )}
+                    {y.be?.name && y.be?.name !== "bruno" && (
+                      <img
+                        width="100%"
+                        alt={j.toString()}
+                        src={"/newpokemon/elements/" + y?.be?.name + ".png"}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))}
 
-        <div
-          className="personaje absolute"
-          style={{
-            backgroundImage: `url(${spriteBruno}`,
-            backgroundPosition: backgroundImagePosition,
-            transform: scaleX + "translateY(-37px)",
-            backgroundRepeat: "no-repeat",
-            top: `${personajeCoordenadas.y * 37}px`,
-            left: `${personajeCoordenadas.x * 37}px`,
-            zIndex: 999,
-            transition: "top 50ms ease, left 50ms ease",
-          }}
-        ></div>
-        {text && (
-          <DivText className="absolute w-full bottom-0 z-[1000]">
-            {displayText}
-          </DivText>
-        )}
+          <div
+            className="personaje absolute"
+            style={{
+              backgroundImage: `url(${spriteBruno}`,
+              backgroundPosition: backgroundImagePosition,
+              transform: scaleX + "translateY(-37px)",
+              backgroundRepeat: "no-repeat",
+              top: `${personajeCoordenadas.y * 37}px`,
+              left: `${personajeCoordenadas.x * 37}px`,
+              zIndex: 999,
+              transition: "top 50ms ease, left 50ms ease",
+            }}
+          ></div>
+          {text && (
+            <DivText className="absolute w-full bottom-0 z-[1000]">
+              {displayText}
+            </DivText>
+          )}
+        </div>
       </div>
-    </div>
+      {menuOpen && (
+        <SelectOption
+          className="absolute right-2 top-2 z-[9999]"
+          classNameOptions="gap-3 py-10"
+          options={optionsMenu}
+          selectOpt={indexOptionMenu}
+          setSelectOpt={setIndexOptionMenu}
+        />
+      )}
+    </>
   );
 };
 

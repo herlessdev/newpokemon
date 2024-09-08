@@ -1,13 +1,13 @@
 import React, { createContext, useEffect, useState, ReactNode } from "react";
 import { getPokemonById } from "../services/get";
 
-export const PokemonDataContext = createContext<unknown>([]);
+export const PokemonDataContext = createContext<PokemonData[]>([]);
 
 export const PokemonDataProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [pokemonData, setPokemonData] = useState<any>([]);
+  const [pokemonData, setPokemonData] = useState<PokemonData[]>([]);
   useEffect(() => {
     const loadPokemonData = async () => {
       try {
@@ -16,7 +16,9 @@ export const PokemonDataProvider: React.FC<{ children: ReactNode }> = ({
           (_, index) => index + 1
         );
         const pokemonDataPromises = pokemonIdsToLoad.map(getPokemonById);
-        const loadedPokemonData = await Promise.all(pokemonDataPromises);
+        const loadedPokemonData: PokemonData[] = await Promise.all(
+          pokemonDataPromises
+        );
         setPokemonData(loadedPokemonData);
       } catch (error) {
         console.error("Error al cargar los datos de los Pokémon:", error);

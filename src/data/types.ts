@@ -71,19 +71,17 @@ export class Pokemon {
   };
   stats: { max_hp: number; current_hp: number };
   status: StatusCondition;
-  location: any
+  location: any;
   xp: number;
 
   constructor(
     pokemon_number: number,
-    level: number,
     baseHP: number,
     xp: number,
-    pokemon_id?: number,
+    pokemon_id?: number
   ) {
     this.pokemon_id = pokemon_id;
     this.pokemon_number = pokemon_number;
-    this.level = level;
     this.baseHP = baseHP;
     this.ivs = {
       hp: getRandomInt(0, 32),
@@ -101,9 +99,10 @@ export class Pokemon {
       specialDefense: 0,
       speed: 0,
     };
-    this.stats = this.calculateStats();
     this.status = "none";
-    this.xp = xp
+    this.xp = xp;
+    this.level = this.calculateLvl();
+    this.stats = this.calculateStats();
   }
 
   calculateStats() {
@@ -111,8 +110,15 @@ export class Pokemon {
     const current_hp = max_hp;
     return { max_hp, current_hp };
   }
+
+  calculateLvl() {
+    const xp = this.xp;
+    const level = Math.round(Math.cbrt(xp));
+    return level
+  }
+
   calculateHP() {
-    const baseHP = 50;
+    const baseHP = this.baseHP;
     const iv = this.ivs.hp;
     const ev = this.evs.hp;
     const level = this.level;
@@ -128,5 +134,5 @@ export class Pokemon {
   }
   setStatus(newStatus: StatusCondition) {
     this.status = newStatus;
-  } 
+  }
 }

@@ -1,33 +1,35 @@
 import { useContext, useEffect, useState } from "react";
 import cx from "../../lib/cx";
-import DivText from "../../shared/div-text";
-import PlatformDuel from "../../shared/platform-duel";
+import DivText from "../../components/shared/div-text";
+import PlatformDuel from "../../components/shared/platform-duel";
 import { PokemonDataContext } from "../../context/PokemonDataProvider";
 import { listPokemon, probability } from "../../data/data";
 import useTypingEffect from "../../hooks/useTypingEffect";
 import BarPokemon from "./bar-pokemon";
-import SelectOption from "../../shared/select-option";
+import SelectOption from "../../components/shared/select-option";
 import { motion } from "framer-motion";
 import "./styles.css";
 import { useNavigate } from "react-router-dom";
 import { Pokemon } from "../../data/types";
+import { UserDataContext } from "../../context/UserDataProvider";
 
 interface Props {
   randomNumber: number | null;
 }
 const Duel = ({ randomNumber }: Props) => {
-  
+  const { userData } = useContext(UserDataContext);
   const [textDuel, setTextDuel] = useState("");
   const [sequence, setSequence] = useState("inicio");
   const [selectOpt, setSelectOpt] = useState(0);
   const [selectOptFight, setSelectOptFight] = useState(0);
   const { displayText, finishedTyping } = useTypingEffect(textDuel, 20);
+  const pokemonsUser = userData.pokemons.filter((x: { location: { place: string; }; })=> x.location.place === "team")
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pokemonData = useContext<any>(PokemonDataContext);
   const initialEnemy = new Pokemon(
     listPokemon[randomNumber ?? 0] - 1,
-    10,
-    pokemonData[listPokemon[randomNumber ?? 0]]?.stats?.[0].base_stat
+    pokemonData[listPokemon[randomNumber ?? 0]]?.stats?.[0].base_stat,
+    2000
   );
   const [pokemonEnemy] = useState<Pokemon>(initialEnemy);
   const navigate = useNavigate();
@@ -120,9 +122,11 @@ const Duel = ({ randomNumber }: Props) => {
     };
   }, [sequence, selectOpt, selectOptFight, navigate]);
 
+  console.log(pokemonsUser);
   return (
     <div className="relative w-full h-full">
       <div className={cx("duel-bg-green")}>
+        {/*pokemon enemy*/}
         <PlatformDuel className="top-1/4 right-0 absolute">
           {listPokemon &&
             randomNumber != null &&
@@ -146,21 +150,25 @@ const Duel = ({ randomNumber }: Props) => {
             )}
 
           <BarPokemon
-            gender_rate={pokemonData?.[pokemonEnemy.pokemon_number]?.gender_rate}
+            gender_rate={
+              pokemonData?.[pokemonEnemy.pokemon_number]?.gender_rate
+            }
             statePokemonEnemy={pokemonEnemy?.status}
-            name={pokemonData?.[pokemonEnemy.pokemon_number]?.name.toUpperCase()}
-            lvl={26}
+            name={pokemonData?.[
+              pokemonEnemy.pokemon_number
+            ]?.name.toUpperCase()}
+            lvl={pokemonEnemy.level}
             className={"absolute bottom-[125%] right-[125%]"}
             max_hp={pokemonEnemy.stats.max_hp}
             current_hp={pokemonEnemy.stats.current_hp}
           />
         </PlatformDuel>
-
+        {/*pokemon user */}
         <PlatformDuel className="top-1/2 translate-y-[50%] left-0 absolute">
           <img
             alt="pokemon-main"
             src={
-              pokemonData[24]?.sprites?.versions?.["generation-iii"]?.[
+              pokemonData[pokemonsUser[0].pokemon_number - 1]?.sprites?.versions?.["generation-iii"]?.[
                 "ruby-sapphire"
               ]?.["back_default"]
             }
@@ -169,13 +177,17 @@ const Duel = ({ randomNumber }: Props) => {
             )}
           />
           <BarPokemon
-            gender_rate={pokemonData?.[pokemonEnemy.pokemon_number]?.gender_rate}
+            gender_rate={
+              pokemonData?.[pokemonEnemy.pokemon_number]?.gender_rate
+            }
             statePokemonEnemy={pokemonEnemy?.status}
-            name={pokemonData?.[pokemonEnemy?.pokemon_number]?.name.toUpperCase()}
-            lvl={26}
+            name={pokemonData?.[
+              pokemonsUser[0]?.pokemon_number - 1
+            ]?.name.toUpperCase()}
+            lvl={pokemonsUser[0].level}
             className={"absolute bottom-[50%] right-[-75%]"}
-            max_hp={pokemonEnemy.stats.max_hp}
-            current_hp={pokemonEnemy.stats.current_hp}
+            max_hp={pokemonsUser[0]?.stats?.max_hp}
+            current_hp={pokemonsUser[0]?.stats?.current_hp}
           />
         </PlatformDuel>
 

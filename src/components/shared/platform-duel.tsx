@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import cx from "../lib/cx";
+import cx from "../../lib/cx";
 import { motion } from "framer-motion";
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
     transition?: Record<string, unknown>;
   };
 };
-const Plataform = ({ children, className, animation }: Props) => {
+const PlatformDuel = ({ children, className, animation }: Props) => {
   const { initial, animate, exit, transition } = animation || {};
   return (
     <motion.div
@@ -21,7 +21,7 @@ const Plataform = ({ children, className, animation }: Props) => {
       exit={exit}
       transition={transition}
       className={cx(
-        "relative max-w-sm w-full h-[100px] bg-[#fffba5] rounded-[100%] border-4 border-[#797730]",
+        "relative max-w-sm w-full h-[100px] bg-[#98e098] rounded-[50%] border-8  border-[#e0e090]",
         className
       )}
     >
@@ -30,4 +30,4 @@ const Plataform = ({ children, className, animation }: Props) => {
   );
 };
 
-export default Plataform;
+export default PlatformDuel;

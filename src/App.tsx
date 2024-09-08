@@ -7,7 +7,6 @@ import World from "./app/world/page";
 import Duel from "./app/duel/page";
 import {
   PokemonDataContext,
-  PokemonDataProvider,
 } from "./context/PokemonDataProvider";
 import useRandomNumber from "./hooks/useRandomNumber";
 import { useContext, useState } from "react";
@@ -16,6 +15,7 @@ import map_1 from "./data/maps";
 
 import { Pokemon } from "./data/types";
 import { UserDataContext } from "./context/UserDataProvider";
+import Team from "./app/team/page";
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,7 +41,7 @@ function App() {
   const [mapa, setMapa] = useState(map_1);
   console.log(userData);
   return (
-    <div className="w-[750px] h-[490px] overflow">
+    <div className="w-[750px] h-[490px] overflow relative font-nova">
       <Routes>
         <Route path="/" element={<StartGame />} />
         <Route path="/select-menu" element={<SelectMenu />} />
@@ -61,7 +61,9 @@ function App() {
           }
         />
         <Route path="/duel" element={<Duel randomNumber={randomNumber} />} />
+        <Route path="/team" element={<Team />} />
       </Routes>
+      <div id="portal" />
     </div>
   );
 }
