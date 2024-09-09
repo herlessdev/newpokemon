@@ -6,15 +6,19 @@ import CardPokemonInBattle from "./card-pokemon-in-battle";
 
 const Team = () => {
   const { userData } = useContext(UserDataContext);
-  const pokemonData = useContext<any>(PokemonDataContext);
+  const pokemonData = useContext<PokemonData[]>(PokemonDataContext);
   console.log(pokemonData);
-  const [team, setTeam] = useState(() => {
+  const [team] = useState(() => {
     const filteredTeam = userData.pokemons
       .filter(
         (x: { location: { place: string } }) => x.location.place === "team"
       )
       .map(
-        (pokemon) =>
+        (pokemon: {
+          pokemon_number: number;
+          xp: number;
+          pokemon_id: number | undefined;
+        }) =>
           new Pokemon(
             pokemon.pokemon_number,
             pokemonData?.[pokemon?.pokemon_number - 1]?.stats[0]?.base_stat,
@@ -37,7 +41,7 @@ const Team = () => {
       <div className="bg-[#c4cb6f] w-full h-full rounded-tl-[2.5rem] flex gap-4">
         <CardPokemonInBattle pokemon={team[0]} />
         <div className="py-5 flex flex-col gap-1">
-          {team.slice(1).map((uteam, i) => (
+          {team.slice(1).map((_uteam: any, i: number) => (
             <div
               key={i}
               style={{ boxShadow: "inset -3px -3px 0px 0px #6a6a61" }}

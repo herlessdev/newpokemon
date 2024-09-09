@@ -26,7 +26,7 @@ const Duel = ({ randomNumber }: Props) => {
   const pokemonsUser = userData.pokemons.filter((x: { location: { place: string; }; })=> x.location.place === "team")
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pokemonData = useContext<any>(PokemonDataContext);
-  const initialEnemy = new Pokemon(
+  const initialEnemy = new Pokemon( 
     listPokemon[randomNumber ?? 0] - 1,
     pokemonData[listPokemon[randomNumber ?? 0]]?.stats?.[0].base_stat,
     2000

@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import "./style.css";
-import crearSeed, { bruno, mapaProps, probability } from "../../data/data";
+import { bruno, mapaProps, probability } from "../../data/data";
 import { useNavigate } from "react-router-dom";
 import useTypingEffect from "../../hooks/useTypingEffect";
 import DivText from "../../components/shared/div-text";

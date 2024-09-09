@@ -2,7 +2,11 @@ import { useContext, useEffect } from "react";
 import { PokemonDataContext } from "../../context/PokemonDataProvider";
 import { useNavigate } from "react-router-dom";
 
-const CardPokemonInBattle = ({ pokemon }) => {
+interface Props {
+  pokemon: any
+}
+
+const CardPokemonInBattle = ({ pokemon } : Props) => {
   const pokemonData = useContext(PokemonDataContext);
   const navigate = useNavigate()
   console.log(pokemonData?.[pokemon?.pokemon_number - 1]);

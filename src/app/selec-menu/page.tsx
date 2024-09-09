@@ -15,7 +15,7 @@ interface OptionMenuProps {
 type MenuOption = (string | OptionMenuProps)[];
 
 const SelectMenu = () => {
-  const {setUserData} = useContext(UserDataContext);
+  const { setUserData } = useContext(UserDataContext);
   const [selectOpt, setSelectOpt] = useState<number>(0);
   const [optionsMenu, setOptionsMenu] = useState<MenuOption>([
     "NEW GAME",
@@ -77,6 +77,7 @@ const SelectMenu = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, optionsMenu, selectOpt]);
 
   return (

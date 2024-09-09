@@ -38,6 +38,7 @@ function App() {
       1000
     )
   );
+  console.log(myPokemon)
   const [mapa, setMapa] = useState(map_1);
   console.log(userData);
   return (
