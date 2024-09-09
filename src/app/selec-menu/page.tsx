@@ -57,14 +57,19 @@ const SelectMenu = () => {
           optionsMenu[selectOpt] !== "NEW GAME" &&
           optionsMenu[selectOpt] !== "OPTIONS"
         ) {
-          const user_id =
-            typeof optionsMenu[selectOpt] === "object" &&
-            optionsMenu[selectOpt] !== null
-              ? optionsMenu[selectOpt].ID
-              : undefined;
-          const partida = await cargarPartidaByID(Number(user_id));
-          setUserData(partida);
-          navigate("/world");
+          if (typeof optionsMenu[selectOpt] !== "string") {
+            const option = optionsMenu[selectOpt] as OptionMenuProps;
+
+            if (option.ID) {
+              const user_id = option.ID;
+              const partida = await cargarPartidaByID(Number(user_id));
+
+              if (partida) {
+                setUserData(partida);
+                navigate("/world");
+              }
+            }
+          }
         }
         if (optionsMenu[selectOpt] === "OPTIONS") {
           navigate("/options");
@@ -77,7 +82,7 @@ const SelectMenu = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, optionsMenu, selectOpt]);
 
   return (
