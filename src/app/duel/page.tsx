@@ -18,15 +18,40 @@ interface Props {
 }
 const Duel = ({ randomNumber }: Props) => {
   const { userData } = useContext(UserDataContext);
+  const pokemonData = useContext(PokemonDataContext);
   const [textDuel, setTextDuel] = useState("");
   const [sequence, setSequence] = useState("inicio");
   const [selectOpt, setSelectOpt] = useState(0);
   const [selectOptFight, setSelectOptFight] = useState(0);
   const { displayText, finishedTyping } = useTypingEffect(textDuel, 20);
-  const pokemonsUser = userData.pokemons.filter((x: { location: { place: string; }; })=> x.location.place === "team")
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pokemonData = useContext<any>(PokemonDataContext);
-  const initialEnemy = new Pokemon( 
+  const pokemonsUser = userData.pokemons.filter(
+    (x: { location: { place: string } }) => x.location.place === "team"
+  );
+  const mapPokemonUser = pokemonsUser?.map((filteredPokemon: any, i: number) => {
+    const newPokemon = new Pokemon(
+      filteredPokemon.pokemon_number,
+      pokemonData?.[filteredPokemon?.pokemon_number - 1]?.stats[0].base_stat,
+      filteredPokemon.xp,
+      filteredPokemon.pokemon_id
+    );
+
+    newPokemon.updateIVs({
+      hp: filteredPokemon.ivs.hp,
+      attack: filteredPokemon.ivs.attack,
+      defense: filteredPokemon.ivs.defense,
+      specialAttack: filteredPokemon.ivs.specialAttack,
+      specialDefense: filteredPokemon.ivs.specialDefense,
+      speed: filteredPokemon.ivs.speed,
+    });
+    newPokemon.updateCurrentHP(filteredPokemon.hp)
+    newPokemon.updateLocation({ place: "team", position: i })
+    
+    return newPokemon;
+  });
+
+  console.log(pokemonsUser[0]);
+  console.log(mapPokemonUser[0]);
+  const initialEnemy = new Pokemon(
     listPokemon[randomNumber ?? 0] - 1,
     pokemonData[listPokemon[randomNumber ?? 0]]?.stats?.[0].base_stat,
     2000
@@ -122,7 +147,6 @@ const Duel = ({ randomNumber }: Props) => {
     };
   }, [sequence, selectOpt, selectOptFight, navigate]);
 
-  console.log(pokemonsUser);
   return (
     <div className="relative w-full h-full">
       <div className={cx("duel-bg-green")}>
@@ -168,9 +192,10 @@ const Duel = ({ randomNumber }: Props) => {
           <img
             alt="pokemon-main"
             src={
-              pokemonData[pokemonsUser[0].pokemon_number - 1]?.sprites?.versions?.["generation-iii"]?.[
-                "ruby-sapphire"
-              ]?.["back_default"]
+              pokemonData[pokemonsUser[0].pokemon_number - 1]?.sprites
+                ?.versions?.["generation-iii"]?.["ruby-sapphire"]?.[
+                "back_default"
+              ]
             }
             className={cx(
               "w-[100px] bottom-0 translate-y-[-25%] left-1/2 absolute translate-x-[-50%]"
@@ -186,8 +211,8 @@ const Duel = ({ randomNumber }: Props) => {
             ]?.name.toUpperCase()}
             lvl={pokemonsUser[0].level}
             className={"absolute bottom-[50%] right-[-75%]"}
-            max_hp={pokemonsUser[0]?.stats?.max_hp}
-            current_hp={pokemonsUser[0]?.stats?.current_hp}
+            max_hp={mapPokemonUser[0]?.stats?.max_hp}
+            current_hp={mapPokemonUser[0]?.stats?.current_hp}
           />
         </PlatformDuel>
 

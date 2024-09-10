@@ -103,6 +103,7 @@ export class Pokemon {
     this.xp = xp;
     this.level = this.calculateLvl();
     this.stats = this.calculateStats();
+    this.location = { place: "unknown" };
   }
 
   calculateStats() {
@@ -134,5 +135,15 @@ export class Pokemon {
   }
   setStatus(newStatus: StatusCondition) {
     this.status = newStatus;
+  }
+
+  updateIVs(newIVs: Partial<Pokemon['ivs']>) {
+    this.ivs = {
+      ...this.ivs,
+      ...newIVs
+    };
+  }
+  updateLocation(newLocation: { place: string, position: number }) {
+    this.location = newLocation;
   }
 }
