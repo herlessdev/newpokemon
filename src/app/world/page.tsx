@@ -40,7 +40,7 @@ const World = ({
   const [scaleX, setScaleX] = useState("");
   const [backgroundImagePosition, setBackgroundPosition] = useState("");
   const [debounce, setDebounce] = useState(false);
-  const [timeAnimation] = useState(50);
+  const [timeAnimation] = useState(150);
   const spriteBruno = "/newpokemon/sprites/sprite-bruno.png";
   const [text] = useState("");
   const [event, setEvent] = useState(false);
@@ -101,10 +101,10 @@ const World = ({
       if (menuOpen) {
         switch (event.key) {
           case "x":
-            navigate("/team")
+            navigate("/team");
             break;
           case "Enter":
-            menuOnToggle()
+            menuOnToggle();
             return;
         }
         return;
@@ -198,7 +198,7 @@ const World = ({
       setDebounce(true);
       setTimeout(() => {
         setDebounce(false);
-      }, 50);
+      }, 150);
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -291,7 +291,7 @@ const World = ({
               top: `${personajeCoordenadas.y * 37}px`,
               left: `${personajeCoordenadas.x * 37}px`,
               zIndex: 999,
-              transition: "top 50ms ease, left 50ms ease",
+              transition: "top 250ms ease-in-out, left 250ms ease-in-out",
             }}
           ></div>
           {text && (
