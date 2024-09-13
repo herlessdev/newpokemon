@@ -24,41 +24,22 @@ const Duel = ({ randomNumber }: Props) => {
   const [selectOpt, setSelectOpt] = useState(0);
   const [selectOptFight, setSelectOptFight] = useState(0);
   const { displayText, finishedTyping } = useTypingEffect(textDuel, 20);
-  const pokemonsUser = userData.pokemons.filter(
+  const pokemonsUser = userData?.pokemons?.filter(
     (x: { location: { place: string } }) => x.location.place === "team"
   );
-  const mapPokemonUser = pokemonsUser?.map((filteredPokemon: any, i: number) => {
-    const newPokemon = new Pokemon(
-      filteredPokemon.pokemon_number,
-      pokemonData?.[filteredPokemon?.pokemon_number - 1]?.stats[0].base_stat,
-      filteredPokemon.xp,
-      filteredPokemon.pokemon_id
-    );
+  const [pokemonUserList, setPokemonUserList] = useState<Pokemon[]>([]);
 
-    newPokemon.updateIVs({
-      hp: filteredPokemon.ivs.hp,
-      attack: filteredPokemon.ivs.attack,
-      defense: filteredPokemon.ivs.defense,
-      specialAttack: filteredPokemon.ivs.specialAttack,
-      specialDefense: filteredPokemon.ivs.specialDefense,
-      speed: filteredPokemon.ivs.speed,
-    });
-    newPokemon.updateCurrentHP(filteredPokemon.hp)
-    newPokemon.updateLocation({ place: "team", position: i })
-    
-    return newPokemon;
-  });
-
-  console.log(pokemonsUser[0]);
-  console.log(mapPokemonUser[0]);
+  const NumberPokemonEnemy = listPokemon[randomNumber ?? 0];
+  const NumberEnemyPokemonData = NumberPokemonEnemy - 1;
   const initialEnemy = new Pokemon(
-    listPokemon[randomNumber ?? 0] - 1,
-    pokemonData[listPokemon[randomNumber ?? 0]]?.stats?.[0].base_stat,
+    NumberPokemonEnemy,
+    pokemonData?.[NumberEnemyPokemonData]?.stats?.[0].base_stat,
     2000
   );
+
   const [pokemonEnemy] = useState<Pokemon>(initialEnemy);
   const navigate = useNavigate();
-
+  console.log(pokemonUserList?.[0]?.ivs?.hp);
   useEffect(() => {
     if (sequence === "inicio") {
       if (pokemonData && randomNumber !== null && !finishedTyping) {
@@ -147,6 +128,38 @@ const Duel = ({ randomNumber }: Props) => {
     };
   }, [sequence, selectOpt, selectOptFight, navigate]);
 
+
+  useEffect(() => {
+    const mappedPokemons = pokemonsUser?.map((filteredPokemon: any, i: number) => {
+      const newPokemon = new Pokemon(
+        filteredPokemon.pokemon_number,
+        pokemonData?.[filteredPokemon?.pokemon_number - 1]?.stats[0].base_stat,
+        filteredPokemon.xp,
+        filteredPokemon.pokemon_id
+      );
+  
+      // Actualiza los IVs solo si están presentes en los datos
+      if (filteredPokemon.ivs) {
+        newPokemon.updateIVs({
+          hp: filteredPokemon.ivs.hp,
+          attack: filteredPokemon.ivs.attack,
+          defense: filteredPokemon.ivs.defense,
+          specialAttack: filteredPokemon.ivs.specialAttack,
+          specialDefense: filteredPokemon.ivs.specialDefense,
+          speed: filteredPokemon.ivs.speed,
+        });
+      }
+  
+      // Actualiza el HP y la ubicación
+      newPokemon.updateCurrentHP(filteredPokemon.hp);
+      newPokemon.updateLocation({ place: "team", position: i });
+  
+      return newPokemon;
+    });
+  
+    setPokemonUserList(mappedPokemons);
+  }, []);
+
   return (
     <div className="relative w-full h-full">
       <div className={cx("duel-bg-green")}>
@@ -158,7 +171,7 @@ const Duel = ({ randomNumber }: Props) => {
               <img
                 alt="pokemon-enemy"
                 src={
-                  pokemonData[pokemonEnemy.pokemon_number]?.sprites?.versions?.[
+                  pokemonData[NumberEnemyPokemonData]?.sprites?.versions?.[
                     "generation-iii"
                   ]?.emerald?.["front_default"]
                 }
@@ -175,11 +188,11 @@ const Duel = ({ randomNumber }: Props) => {
 
           <BarPokemon
             gender_rate={
-              pokemonData?.[pokemonEnemy.pokemon_number]?.gender_rate
+              pokemonData?.[NumberEnemyPokemonData]?.gender_rate
             }
-            statePokemonEnemy={pokemonEnemy?.status}
+            statePokemon={pokemonEnemy?.status}
             name={pokemonData?.[
-              pokemonEnemy.pokemon_number
+              NumberEnemyPokemonData
             ]?.name.toUpperCase()}
             lvl={pokemonEnemy.level}
             className={"absolute bottom-[125%] right-[125%]"}
@@ -192,7 +205,7 @@ const Duel = ({ randomNumber }: Props) => {
           <img
             alt="pokemon-main"
             src={
-              pokemonData[pokemonsUser[0].pokemon_number - 1]?.sprites
+              pokemonData[pokemonsUser?.[0].pokemon_number - 1]?.sprites
                 ?.versions?.["generation-iii"]?.["ruby-sapphire"]?.[
                 "back_default"
               ]
@@ -203,16 +216,15 @@ const Duel = ({ randomNumber }: Props) => {
           />
           <BarPokemon
             gender_rate={
-              pokemonData?.[pokemonEnemy.pokemon_number]?.gender_rate
+              pokemonData?.[pokemonUserList?.[0]?.pokemon_number - 1]?.gender_rate
             }
-            statePokemonEnemy={pokemonEnemy?.status}
-            name={pokemonData?.[
-              pokemonsUser[0]?.pokemon_number - 1
-            ]?.name.toUpperCase()}
-            lvl={pokemonsUser[0].level}
+            statePokemon={pokemonUserList?.[0]?.status}
+            name={pokemonData?.[pokemonUserList?.[0]?.pokemon_number - 1]?.name.toUpperCase()}
+            lvl={pokemonUserList?.[0]?.level}
             className={"absolute bottom-[50%] right-[-75%]"}
-            max_hp={mapPokemonUser[0]?.stats?.max_hp}
-            current_hp={mapPokemonUser[0]?.stats?.current_hp}
+            max_hp={pokemonUserList?.[0]?.stats?.max_hp}
+            current_hp={pokemonUserList?.[0]?.stats?.current_hp}
+            show_values={true}
           />
         </PlatformDuel>
 

@@ -46,9 +46,7 @@ export default function crearSeed() {
   }
   return mapa;
 }
-
-export const host = "https://backendpokemon.onrender.com";
-//export const host = "http://127.0.0.1:3000"
+export const host = import.meta.env.VITE_APP_BACKEND_URL;
 
 export function transformXP(xp: number) {
   if (xp === 0) return 1;

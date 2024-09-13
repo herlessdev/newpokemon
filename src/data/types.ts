@@ -127,7 +127,7 @@ export class Pokemon {
   }
 
   updateCurrentHP(newHP: number) {
-    this.stats.current_hp = Math.max(Math.min(newHP, this.stats.max_hp), 0); // Asegura que current_hp esté dentro de los límites
+    this.stats.current_hp = Math.max(Math.min(newHP, this.stats.max_hp), 0); 
   }
 
   takeDamage(damage: number) {

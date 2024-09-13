@@ -3,21 +3,22 @@ interface Props {
   name: string;
   lvl: number;
   className: string;
-  statePokemonEnemy: string;
+  statePokemon: string;
   gender_rate: number;
   max_hp: number;
   current_hp: number;
+  show_values?: boolean;
 }
 const BarPokemon = ({
   name,
   lvl,
   className,
-  statePokemonEnemy,
+  statePokemon,
   gender_rate,
   max_hp,
   current_hp,
+  show_values = false,
 }: Props) => {
-  console.log(current_hp)
   return (
     <div
       className={cx(
@@ -47,7 +48,7 @@ const BarPokemon = ({
               className="w-4"
             />
           )}
-          {statePokemonEnemy === "paralyzed" && (
+          {statePokemon === "paralyzed" && (
             <div className="bg-[#adb934] text-[white] px-1 text-[9px] rounded-md">
               PAR
             </div>
@@ -67,6 +68,11 @@ const BarPokemon = ({
           )}
         </div>
       </div>
+      {show_values && (
+        <div className="leading-[1] pt-0.5 ml-auto">
+          {current_hp}/ {max_hp}
+        </div>
+      )}
     </div>
   );
 };
