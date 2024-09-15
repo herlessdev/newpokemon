@@ -26,19 +26,6 @@ function App() {
     x: 0,
     y: 10,
   });
-  const [myPokemonData] = useState({
-    number: 25,
-    level: 10,
-  });
-  const [myPokemon] = useState(
-    new Pokemon(
-      myPokemonData.number,
-      myPokemonData.level,
-      pokemonData[myPokemonData.number]?.stats?.[0].base_stat,
-      1000
-    )
-  );
-  console.log(myPokemon)
   const [mapa, setMapa] = useState(map_1);
   console.log(userData);
   return (

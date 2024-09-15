@@ -123,7 +123,7 @@ export class Pokemon {
     const iv = this.ivs.hp;
     const ev = this.evs.hp;
     const level = this.level;
-    return 10 + Math.floor((level / 100) * (baseHP * 2 + iv + ev));
+    return 10 + Math.floor((level / 100) * (baseHP * 2 + iv + ev)) + level;
   }
 
   updateCurrentHP(newHP: number) {
@@ -142,8 +142,15 @@ export class Pokemon {
       ...this.ivs,
       ...newIVs
     };
+    this.stats = this.calculateStats();
   }
   updateLocation(newLocation: { place: string, position: number }) {
     this.location = newLocation;
+  }
+
+  addXP(amount: number) {
+    this.xp += amount;
+    this.level = this.calculateLvl();
+    this.stats = this.calculateStats();
   }
 }

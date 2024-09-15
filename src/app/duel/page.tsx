@@ -17,7 +17,7 @@ interface Props {
   randomNumber: number | null;
 }
 const Duel = ({ randomNumber }: Props) => {
-  const { userData } = useContext(UserDataContext);
+  const { userData, setUserData } = useContext(UserDataContext);
   const pokemonData = useContext(PokemonDataContext);
   const [textDuel, setTextDuel] = useState("");
   const [sequence, setSequence] = useState("inicio");
@@ -39,7 +39,34 @@ const Duel = ({ randomNumber }: Props) => {
 
   const [pokemonEnemy] = useState<Pokemon>(initialEnemy);
   const navigate = useNavigate();
-  console.log(pokemonUserList?.[0]?.ivs?.hp);
+
+  const updateUserDataWithPokemonList = () => {
+    const updatedPokemons = userData.pokemons.map((pokemon, index) => {
+      const updatedPokemon = pokemonUserList.find(
+        (p) => p.pokemon_id === pokemon.pokemon_id
+      );
+
+      if (updatedPokemon) {
+        return {
+          ...pokemon, // Mantiene el resto de los datos
+          hp: updatedPokemon.stats.current_hp,
+          lvl: updatedPokemon.level,
+          xp: updatedPokemon.xp,
+          status: updatedPokemon.status,
+        };
+      }
+
+      return pokemon; // Si no se encuentra en la lista actualizada, lo dejamos como está
+    });
+
+    const updatedUserData = {
+      ...userData,
+      pokemons: updatedPokemons,
+    };
+
+    setUserData(updatedUserData);
+  };
+
   useEffect(() => {
     if (sequence === "inicio") {
       if (pokemonData && randomNumber !== null && !finishedTyping) {
@@ -93,16 +120,35 @@ const Duel = ({ randomNumber }: Props) => {
     }
     if (sequence === "give-experience") {
       setTimeout(() => {
-        setTextDuel("Has ganado 500 xp");
+        const experienceGained = Math.ceil(
+          (pokemonData?.[pokemonEnemy.pokemon_number - 1]?.base_experience *
+            pokemonEnemy?.level *
+            1) /
+            7
+        );
+        setTextDuel(`Has ganado ${experienceGained}`);
+        if (!finishedTyping) {
+          const updatedPokemonUserList = [...pokemonUserList];
+          const pokemon = updatedPokemonUserList[0];
+          if (pokemon) {
+            pokemon.addXP(experienceGained);
+          }
+          setPokemonUserList(updatedPokemonUserList);
+        }
+
         setSequence("finish-duel");
       }, 1000);
     }
     if (sequence === "finish-duel") {
+      if (!finishedTyping) {
+        updateUserDataWithPokemonList();
+      }
       setTimeout(() => {
         navigate("/world");
       }, 1250);
     }
   }, [pokemonData, finishedTyping]);
+  console.log(pokemonUserList?.[0]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -116,7 +162,7 @@ const Duel = ({ randomNumber }: Props) => {
         if (sequence === "fight" && selectOptFight === 0) {
           setSequence("attack");
           setTextDuel("PIKACHU a lanzado un impactrueno");
-          pokemonEnemy.takeDamage(5);
+          pokemonEnemy.takeDamage(10);
         }
       }
     };
@@ -128,41 +174,41 @@ const Duel = ({ randomNumber }: Props) => {
     };
   }, [sequence, selectOpt, selectOptFight, navigate]);
 
-
   useEffect(() => {
-    const mappedPokemons = pokemonsUser?.map((filteredPokemon: any, i: number) => {
-      const newPokemon = new Pokemon(
-        filteredPokemon.pokemon_number,
-        pokemonData?.[filteredPokemon?.pokemon_number - 1]?.stats[0].base_stat,
-        filteredPokemon.xp,
-        filteredPokemon.pokemon_id
-      );
-  
-      // Actualiza los IVs solo si están presentes en los datos
-      if (filteredPokemon.ivs) {
-        newPokemon.updateIVs({
-          hp: filteredPokemon.ivs.hp,
-          attack: filteredPokemon.ivs.attack,
-          defense: filteredPokemon.ivs.defense,
-          specialAttack: filteredPokemon.ivs.specialAttack,
-          specialDefense: filteredPokemon.ivs.specialDefense,
-          speed: filteredPokemon.ivs.speed,
-        });
+    const mappedPokemons = pokemonsUser?.map(
+      (filteredPokemon: any, i: number) => {
+        const newPokemon = new Pokemon(
+          filteredPokemon.pokemon_number,
+          pokemonData?.[
+            filteredPokemon?.pokemon_number - 1
+          ]?.stats[0].base_stat,
+          filteredPokemon.xp,
+          filteredPokemon.pokemon_id
+        );
+
+        if (filteredPokemon.ivs) {
+          newPokemon.updateIVs({
+            hp: filteredPokemon.ivs.hp,
+            attack: filteredPokemon.ivs.attack,
+            defense: filteredPokemon.ivs.defense,
+            specialAttack: filteredPokemon.ivs.specialAttack,
+            specialDefense: filteredPokemon.ivs.specialDefense,
+            speed: filteredPokemon.ivs.speed,
+          });
+        }
+
+        newPokemon.updateLocation({ place: "team", position: i });
+        newPokemon.updateCurrentHP(filteredPokemon.hp);
+        return newPokemon;
       }
-  
-      // Actualiza el HP y la ubicación
-      newPokemon.updateCurrentHP(filteredPokemon.hp);
-      newPokemon.updateLocation({ place: "team", position: i });
-  
-      return newPokemon;
-    });
-  
+    );
     setPokemonUserList(mappedPokemons);
   }, []);
 
   return (
     <div className="relative w-full h-full">
       <div className={cx("duel-bg-green")}>
+        {pokemonUserList?.[0]?.xp}
         {/*pokemon enemy*/}
         <PlatformDuel className="top-1/4 right-0 absolute">
           {listPokemon &&
@@ -187,13 +233,9 @@ const Duel = ({ randomNumber }: Props) => {
             )}
 
           <BarPokemon
-            gender_rate={
-              pokemonData?.[NumberEnemyPokemonData]?.gender_rate
-            }
+            gender_rate={pokemonData?.[NumberEnemyPokemonData]?.gender_rate}
             statePokemon={pokemonEnemy?.status}
-            name={pokemonData?.[
-              NumberEnemyPokemonData
-            ]?.name.toUpperCase()}
+            name={pokemonData?.[NumberEnemyPokemonData]?.name.toUpperCase()}
             lvl={pokemonEnemy.level}
             className={"absolute bottom-[125%] right-[125%]"}
             max_hp={pokemonEnemy.stats.max_hp}
@@ -216,10 +258,13 @@ const Duel = ({ randomNumber }: Props) => {
           />
           <BarPokemon
             gender_rate={
-              pokemonData?.[pokemonUserList?.[0]?.pokemon_number - 1]?.gender_rate
+              pokemonData?.[pokemonUserList?.[0]?.pokemon_number - 1]
+                ?.gender_rate
             }
             statePokemon={pokemonUserList?.[0]?.status}
-            name={pokemonData?.[pokemonUserList?.[0]?.pokemon_number - 1]?.name.toUpperCase()}
+            name={pokemonData?.[
+              pokemonUserList?.[0]?.pokemon_number - 1
+            ]?.name.toUpperCase()}
             lvl={pokemonUserList?.[0]?.level}
             className={"absolute bottom-[50%] right-[-75%]"}
             max_hp={pokemonUserList?.[0]?.stats?.max_hp}
