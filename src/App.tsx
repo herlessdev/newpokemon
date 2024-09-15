@@ -5,21 +5,16 @@ import StartGame from "./app/start-game/page";
 import NewGame from "./app/selec-menu/new-game/page";
 import World from "./app/world/page";
 import Duel from "./app/duel/page";
-import {
-  PokemonDataContext,
-} from "./context/PokemonDataProvider";
 import useRandomNumber from "./hooks/useRandomNumber";
 import { useContext, useState } from "react";
 import Options from "./app/selec-menu/options/page";
 import map_1 from "./data/maps";
 
-import { Pokemon } from "./data/types";
 import { UserDataContext } from "./context/UserDataProvider";
 import Team from "./app/team/page";
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pokemonData = useContext<any>(PokemonDataContext);
   const { userData } = useContext(UserDataContext);
   const { randomNumber, generateRandomNumber } = useRandomNumber();
   const [personajeCoordenadas, setPersonajeCoordenadas] = useState({

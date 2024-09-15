@@ -41,7 +41,7 @@ const Duel = ({ randomNumber }: Props) => {
   const navigate = useNavigate();
 
   const updateUserDataWithPokemonList = () => {
-    const updatedPokemons = userData.pokemons.map((pokemon, index) => {
+    const updatedPokemons = userData.pokemons.map((pokemon: { pokemon_id: number | undefined; }) => {
       const updatedPokemon = pokemonUserList.find(
         (p) => p.pokemon_id === pokemon.pokemon_id
       );
