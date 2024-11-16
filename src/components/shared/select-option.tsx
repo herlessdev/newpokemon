@@ -6,6 +6,7 @@ interface Props {
   classNameOptions?: string;
   selectOpt: number;
   setSelectOpt: Dispatch<SetStateAction<number>>;
+  active?: boolean
 }
 
 const SelectOption = ({
@@ -14,9 +15,11 @@ const SelectOption = ({
   setSelectOpt,
   className,
   classNameOptions,
+  active = true
 }: Props) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if(!active) return
       if (event.key === "ArrowUp" && selectOpt > 0) {
         setSelectOpt((prevSelectOpt) => prevSelectOpt - 1);
       } else if (event.key === "ArrowDown" && selectOpt < options.length - 1) {
@@ -44,7 +47,7 @@ const SelectOption = ({
           classNameOptions
         )}
       >
-        {options.map((opt, i) => (
+        {options?.map((opt, i) => (
           <div key={i} className="relative">
             {opt}
             {selectOpt === i && (

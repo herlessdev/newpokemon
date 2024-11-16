@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import useArrowNavigation from "../../../hooks/useArrowNavigation ";
 import cx from "../../../lib/cx";
 import SelectOpt from "./select-opt";
+import { useContext } from "react";
+import { UserDataContext } from "../../../context/UserDataProvider";
 
 const options = [
   {
@@ -35,6 +37,7 @@ const options = [
 
 const Options = () => {
   const navigate = useNavigate();
+  const { userData } = useContext(UserDataContext);
   const { selectOpt } = useArrowNavigation(
     options.length,
     0,
@@ -42,15 +45,20 @@ const Options = () => {
     true,
     [
       {
-        key: "a",
+        key: "x",
         optionIndex: options.length - 1, // Índice de la primera opción
         callback: () => {
-          navigate("/select-menu");
+          if (userData.length === 0) {
+            navigate("/select-menu");
+          } else {
+            navigate("/world");
+          }
         },
       },
       // Puedes agregar más configuraciones de teclas aquí
     ]
   );
+
   return (
     <div
       style={{ scrollbarWidth: "none" }}

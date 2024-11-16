@@ -100,10 +100,9 @@ const Step1 = ({
           };
           const initialPokemon = new Pokemon(            
             25,
-            10,
             pokemonData[25]?.stats?.[0].base_stat,
             1000
-          );
+          )
           console.log(initialPokemon)
           const userResponse = await nuevaPartida(userData);
           const user_id = userResponse.user_id;

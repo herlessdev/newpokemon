@@ -48,7 +48,7 @@ const SelectMenu = () => {
         selectOpt < optionsMenu.length - 1
       ) {
         setSelectOpt((prevSelectOpt) => prevSelectOpt + 1);
-      } else if (event.key === "a") {
+      } else if (event.key === "x") {
         if (optionsMenu[selectOpt] === "NEW GAME") {
           navigate("/select-menu/new-game");
         }

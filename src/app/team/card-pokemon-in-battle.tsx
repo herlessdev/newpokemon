@@ -1,20 +1,20 @@
 import { useContext, useEffect } from "react";
 import { PokemonDataContext } from "../../context/PokemonDataProvider";
 import { useNavigate } from "react-router-dom";
-
+import { motion } from "framer-motion";
 interface Props {
-  pokemon: any
+  pokemon: any;
 }
 
-const CardPokemonInBattle = ({ pokemon } : Props) => {
+const CardPokemonInBattle = ({ pokemon }: Props) => {
   const pokemonData = useContext(PokemonDataContext);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   console.log(pokemonData?.[pokemon?.pokemon_number - 1]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if(event.key === "Enter") {
-        navigate("/world")
+      if (event.key === "Enter") {
+        navigate("/world");
       }
     };
 
@@ -33,7 +33,14 @@ const CardPokemonInBattle = ({ pokemon } : Props) => {
       className="flex flex-col h-[100px] w-[185px] border-[#4b4a63] border-4 rounded-md relative left-[-25px] top-1/4 text-white"
     >
       <div className="flex">
-        <img
+        <motion.img
+          initial={{ y: 0 }}
+          animate={{ y: 5 }}
+          transition={{
+            duration: 0.15,
+            repeat: Infinity,
+            repeatType: "mirror",
+          }}
           src={
             pokemonData?.[pokemon?.pokemon_number - 1]?.sprites?.versions?.[
               "generation-vii"

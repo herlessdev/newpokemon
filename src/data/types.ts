@@ -115,7 +115,7 @@ export class Pokemon {
   calculateLvl() {
     const xp = this.xp;
     const level = Math.round(Math.cbrt(xp));
-    return level
+    return level;
   }
 
   calculateHP() {
@@ -123,28 +123,33 @@ export class Pokemon {
     const iv = this.ivs.hp;
     const ev = this.evs.hp;
     const level = this.level;
-    return 10 + Math.floor((level / 100) * (baseHP * 2 + iv + ev)) + level;
+    const hpTotal =
+      10 +
+      Math.floor((level / 100) * (baseHP * 2 + iv + Math.floor(ev / 4))) +
+      level;
+    return hpTotal;
   }
 
   updateCurrentHP(newHP: number) {
-    this.stats.current_hp = Math.max(Math.min(newHP, this.stats.max_hp), 0); 
+    this.stats.current_hp = Math.max(Math.min(newHP, this.stats.max_hp), 0);
   }
 
   takeDamage(damage: number) {
     this.stats.current_hp = Math.max(this.stats.current_hp - damage, 0); // Ensure HP does not go below 0
   }
+
   setStatus(newStatus: StatusCondition) {
     this.status = newStatus;
   }
 
-  updateIVs(newIVs: Partial<Pokemon['ivs']>) {
+  updateIVs(newIVs: Partial<Pokemon["ivs"]>) {
     this.ivs = {
       ...this.ivs,
-      ...newIVs
+      ...newIVs,
     };
     this.stats = this.calculateStats();
   }
-  updateLocation(newLocation: { place: string, position: number }) {
+  updateLocation(newLocation: { place: string; position: number }) {
     this.location = newLocation;
   }
 

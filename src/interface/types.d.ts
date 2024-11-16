@@ -254,3 +254,11 @@ interface PokemonData {
   weight: number;
   gender_rate: number
 }
+
+interface DuelParams {
+
+}
+
+interface OptionsFight {
+  
+}

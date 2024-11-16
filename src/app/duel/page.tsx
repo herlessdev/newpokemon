@@ -12,23 +12,37 @@ import "./styles.css";
 import { useNavigate } from "react-router-dom";
 import { Pokemon } from "../../data/types";
 import { UserDataContext } from "../../context/UserDataProvider";
+import SelectOptionMultipleDirection from "../../components/shared/select-option-multiple-direction";
+import OptionsFight from "./options-fight";
 
 interface Props {
   randomNumber: number | null;
+  sequence?: string;
 }
-const Duel = ({ randomNumber }: Props) => {
+
+const optionsDuel = [
+  [
+    { name: "fight", action: () => console.log("fight") },
+    { name: "bag", action: () => console.log("bag") },
+  ],
+  [
+    { name: "pokémon", action: () => console.log("pokémon") },
+    { name: "run", action: () => console.log("run") },
+  ],
+];
+
+const Duel = ({ randomNumber, sequence = "inicio" }: Props) => {
   const { userData, setUserData } = useContext(UserDataContext);
   const pokemonData = useContext(PokemonDataContext);
   const [textDuel, setTextDuel] = useState("");
-  const [sequence, setSequence] = useState("inicio");
-  const [selectOpt, setSelectOpt] = useState(0);
+  const [currentSequence, setCurrentSequence] = useState(sequence); // Usar `sequence` como valor inicial
+  const [selectOpt, setSelectOpt] = useState({ row: 0, column: 0 });
   const [selectOptFight, setSelectOptFight] = useState(0);
   const { displayText, finishedTyping } = useTypingEffect(textDuel, 20);
   const pokemonsUser = userData?.pokemons?.filter(
     (x: { location: { place: string } }) => x.location.place === "team"
   );
   const [pokemonUserList, setPokemonUserList] = useState<Pokemon[]>([]);
-
   const NumberPokemonEnemy = listPokemon[randomNumber ?? 0];
   const NumberEnemyPokemonData = NumberPokemonEnemy - 1;
   const initialEnemy = new Pokemon(
@@ -41,23 +55,25 @@ const Duel = ({ randomNumber }: Props) => {
   const navigate = useNavigate();
 
   const updateUserDataWithPokemonList = () => {
-    const updatedPokemons = userData.pokemons.map((pokemon: { pokemon_id: number | undefined; }) => {
-      const updatedPokemon = pokemonUserList.find(
-        (p) => p.pokemon_id === pokemon.pokemon_id
-      );
+    const updatedPokemons = userData.pokemons.map(
+      (pokemon: { pokemon_id: number | undefined }) => {
+        const updatedPokemon = pokemonUserList.find(
+          (p) => p.pokemon_id === pokemon.pokemon_id
+        );
 
-      if (updatedPokemon) {
-        return {
-          ...pokemon, // Mantiene el resto de los datos
-          hp: updatedPokemon.stats.current_hp,
-          lvl: updatedPokemon.level,
-          xp: updatedPokemon.xp,
-          status: updatedPokemon.status,
-        };
+        if (updatedPokemon) {
+          return {
+            ...pokemon, // Mantiene el resto de los datos
+            hp: updatedPokemon.stats.current_hp,
+            lvl: updatedPokemon.level,
+            xp: updatedPokemon.xp,
+            status: updatedPokemon.status,
+          };
+        }
+
+        return pokemon; // Si no se encuentra en la lista actualizada, lo dejamos como está
       }
-
-      return pokemon; // Si no se encuentra en la lista actualizada, lo dejamos como está
-    });
+    );
 
     const updatedUserData = {
       ...userData,
@@ -68,23 +84,23 @@ const Duel = ({ randomNumber }: Props) => {
   };
 
   useEffect(() => {
-    if (sequence === "inicio") {
+    if (currentSequence === "inicio") {
       if (pokemonData && randomNumber !== null && !finishedTyping) {
         setTextDuel(
           "Wild " +
             pokemonData?.[listPokemon[randomNumber] - 1]?.name.toUpperCase() +
             " appeared!"
         );
-        setSequence("invocar");
+        setCurrentSequence("invocar");
       }
     }
-    if (sequence === "invocar" && finishedTyping) {
+    if (currentSequence === "invocar" && finishedTyping) {
       setTimeout(() => {
         setTextDuel("Go! PIKACHU!");
-        setSequence("effect");
+        setCurrentSequence("effect");
       }, 500);
     }
-    if (sequence === "effect" && finishedTyping) {
+    if (currentSequence === "effect" && finishedTyping) {
       setTimeout(() => {
         if (probability(0.2)) {
           setTextDuel("PIKACHU ha paralizado a su oponente");
@@ -93,32 +109,32 @@ const Duel = ({ randomNumber }: Props) => {
           setTextDuel(" ");
         }
 
-        setSequence("trans-options");
+        setCurrentSequence("trans-options");
       }, 500);
     }
-    if (sequence === "trans-options" && finishedTyping) {
+    if (currentSequence === "trans-options" && finishedTyping) {
       setTimeout(() => {
         setTextDuel(" ");
-        setSequence("options");
+        setCurrentSequence("options");
       }, 500);
     }
-    if (sequence === "receive-attack") {
+    if (currentSequence === "receive-attack") {
       setTimeout(() => {
         if (pokemonEnemy.status === "paralyzed") {
           setTextDuel("Pokemon enemigo se encuentra paralizado");
-          setSequence("trans-options");
+          setCurrentSequence("trans-options");
         } else {
           if (pokemonEnemy.stats.current_hp <= 0) {
             setTextDuel("Pokemon enemigo se ha debilitado");
-            setSequence("give-experience");
+            setCurrentSequence("give-experience");
           } else {
             setTextDuel("Pokemon enemigo ataca");
-            setSequence("trans-options");
+            setCurrentSequence("trans-options");
           }
         }
       }, 500);
     }
-    if (sequence === "give-experience") {
+    if (currentSequence === "give-experience") {
       setTimeout(() => {
         const experienceGained = Math.ceil(
           (pokemonData?.[pokemonEnemy.pokemon_number - 1]?.base_experience *
@@ -136,10 +152,10 @@ const Duel = ({ randomNumber }: Props) => {
           setPokemonUserList(updatedPokemonUserList);
         }
 
-        setSequence("finish-duel");
+        setCurrentSequence("finish-duel");
       }, 1000);
     }
-    if (sequence === "finish-duel") {
+    if (currentSequence === "finish-duel") {
       if (!finishedTyping) {
         updateUserDataWithPokemonList();
       }
@@ -148,31 +164,49 @@ const Duel = ({ randomNumber }: Props) => {
       }, 1250);
     }
   }, [pokemonData, finishedTyping]);
-  console.log(pokemonUserList?.[0]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key.toLocaleLowerCase() === "a") {
-        if (sequence === "options" && selectOpt === 0) {
-          setSequence("fight");
+      if (event.key.toLocaleLowerCase() === "z") {
+        if (
+          currentSequence === "options" &&
+          optionsDuel[selectOpt.row][selectOpt.column]?.name === "fight"
+        ) {
+          setCurrentSequence("fight");
         }
-        if (sequence === "options" && selectOpt === 1) {
+        if (
+          currentSequence === "options" &&
+          optionsDuel[selectOpt.row][selectOpt.column]?.name === "run"
+        ) {
           navigate("/world");
         }
-        if (sequence === "fight" && selectOptFight === 0) {
-          setSequence("attack");
+        if (
+          currentSequence === "options" &&
+          optionsDuel[selectOpt.row][selectOpt.column]?.name === "bag"
+        ) {
+          navigate("/bag", { state: { someProp: "duel" } });
+        }
+        if (
+          currentSequence === "options" &&
+          optionsDuel[selectOpt.row][selectOpt.column]?.name === "pokémon"
+        ) {
+          navigate("/pokemon");
+        }
+
+        if (currentSequence === "fight" && selectOptFight === 0) {
+          setCurrentSequence("attack");
           setTextDuel("PIKACHU a lanzado un impactrueno");
           pokemonEnemy.takeDamage(10);
         }
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [sequence, selectOpt, selectOptFight, navigate]);
+  }, [currentSequence, selectOpt, selectOptFight, navigate]);
 
   useEffect(() => {
     const mappedPokemons = pokemonsUser?.map(
@@ -208,7 +242,6 @@ const Duel = ({ randomNumber }: Props) => {
   return (
     <div className="relative w-full h-full">
       <div className={cx("duel-bg-green")}>
-        {pokemonUserList?.[0]?.xp}
         {/*pokemon enemy*/}
         <PlatformDuel className="top-1/4 right-0 absolute">
           {listPokemon &&
@@ -273,7 +306,7 @@ const Duel = ({ randomNumber }: Props) => {
           />
         </PlatformDuel>
 
-        {sequence === "attack" && (
+        {currentSequence === "attack" && (
           <div className="container">
             <motion.div
               className="lightning right-[17.5%] absolute top-[-20%]"
@@ -286,32 +319,29 @@ const Duel = ({ randomNumber }: Props) => {
                 ease: "linear",
               }}
               onAnimationComplete={() => {
-                setSequence("receive-attack");
+                setCurrentSequence("receive-attack");
               }}
             />
           </div>
         )}
 
         <DivText className="bottom-0 absolute w-full">
-          {sequence !== "options" && sequence !== "fight" && displayText}
-          {sequence === "options" && (
+          {currentSequence !== "options" && currentSequence !== "fight" && displayText}
+          {currentSequence === "options" && (
             <>
               What will PIKACHU do?
-              <SelectOption
+              <SelectOptionMultipleDirection
                 selectOpt={selectOpt}
                 setSelectOpt={setSelectOpt}
-                options={["FIGHT", "RUN"]}
+                options={optionsDuel?.map((fileOpts) =>
+                  fileOpts?.map((opt) => opt?.name)
+                )}
                 className="w-[50%] absolute right-0 top-[1px] p-3.5 border-8 rounded-[16px]"
               />
             </>
           )}
-          {sequence === "fight" && (
-            <SelectOption
-              selectOpt={selectOptFight}
-              setSelectOpt={setSelectOptFight}
-              options={["IMPACTRUENO", "-"]}
-              className="w-full absolute right-0 top-0 p-4 border-[7px] rounded-[8px] text-3xl font-mono"
-            />
+          {currentSequence === "fight" && (
+            <OptionsFight />
           )}
         </DivText>
       </div>

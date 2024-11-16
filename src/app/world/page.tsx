@@ -12,7 +12,7 @@ import useTypingEffect from "../../hooks/useTypingEffect";
 import DivText from "../../components/shared/div-text";
 import useToggle from "../../hooks/useToggle";
 import { UserDataContext } from "../../context/UserDataProvider";
-import SelectOption from "../../components/shared/select-option";
+import Menu from "./menu";
 
 type PersonajeCoordenadas = {
   x: number;
@@ -49,15 +49,7 @@ const World = ({
   const { isOpen: menuOpen, onToggle: menuOnToggle } = useToggle();
   const navigate = useNavigate();
   const { userData } = useContext(UserDataContext);
-  const optionsMenu = [
-    "POKéMON",
-    "BAG",
-    userData.user[1],
-    "SAVE",
-    "OPTION",
-    "EXIT",
-  ];
-  const [indexOptionMenu, setIndexOptionMenu] = useState<number>(0);
+
   const moverPersonaje = (deltaX: number, deltaY: number) => {
     const newPosX = personajeCoordenadas.x + deltaX;
     const newPosY = personajeCoordenadas.y + deltaY;
@@ -90,6 +82,8 @@ const World = ({
     }
   };
 
+  console.log(userData);
+
   useEffect(() => {
     if (debounce) {
       return;
@@ -98,17 +92,8 @@ const World = ({
       return;
     }
     const handleKeyDown = (event: { key: string }) => {
-      if (menuOpen) {
-        switch (event.key) {
-          case "x":
-            navigate("/team");
-            break;
-          case "Enter":
-            menuOnToggle();
-            return;
-        }
-        return;
-      }
+      if (menuOpen) return;
+
       switch (event.key) {
         case "ArrowUp":
           setDirection("Up");
@@ -291,7 +276,7 @@ const World = ({
               top: `${personajeCoordenadas.y * 37}px`,
               left: `${personajeCoordenadas.x * 37}px`,
               zIndex: 999,
-              transition: "top 250ms ease-in-out, left 250ms ease-in-out",
+              transition: "top 150ms ease-in-out, left 150ms ease-in-out",
             }}
           ></div>
           {text && (
@@ -301,15 +286,7 @@ const World = ({
           )}
         </div>
       </div>
-      {menuOpen && (
-        <SelectOption
-          className="absolute right-2 top-2 z-[9999]"
-          classNameOptions="gap-3 py-10"
-          options={optionsMenu}
-          selectOpt={indexOptionMenu}
-          setSelectOpt={setIndexOptionMenu}
-        />
-      )}
+      {menuOpen && <Menu userData={userData} menuOnToggle={menuOnToggle} />}
     </>
   );
 };
