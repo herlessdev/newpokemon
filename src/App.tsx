@@ -18,7 +18,6 @@ function App() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { userData, setUserData } = useContext(UserDataContext);
   const location = useLocation();
-  const { randomNumber, generateRandomNumber } = useRandomNumber();
   const [personajeCoordenadas, setPersonajeCoordenadas] = useState({
     x: 0,
     y: 10,
@@ -47,12 +46,10 @@ function App() {
               setMapa={setMapa}
               personajeCoordenadas={personajeCoordenadas}
               setPersonajeCoordenadas={setPersonajeCoordenadas}
-              randomNumber={randomNumber}
-              generateRandomNumber={generateRandomNumber}
             />
           }
         />
-        <Route path="/duel" element={<Duel randomNumber={randomNumber} />} />
+        <Route path="/duel" element={<Duel />} />
         <Route path="/team" element={<Team />} />
         <Route path="/bag" element={<Bag />} />
       </Routes>

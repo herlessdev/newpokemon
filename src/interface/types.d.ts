@@ -258,7 +258,3 @@ interface PokemonData {
 interface DuelParams {
 
 }
-
-interface OptionsFight {
-  
-}

@@ -13,6 +13,7 @@ import DivText from "../../components/shared/div-text";
 import useToggle from "../../hooks/useToggle";
 import { UserDataContext } from "../../context/UserDataProvider";
 import Menu from "./menu";
+import { useDuelData } from "../../hooks/useDuel";
 
 type PersonajeCoordenadas = {
   x: number;
@@ -20,8 +21,6 @@ type PersonajeCoordenadas = {
 };
 
 interface Props {
-  randomNumber: number | null;
-  generateRandomNumber: () => void;
   personajeCoordenadas: PersonajeCoordenadas;
   setPersonajeCoordenadas: Dispatch<SetStateAction<PersonajeCoordenadas>>;
   mapa: mapaProps[][];
@@ -32,7 +31,6 @@ const World = ({
   mapa,
   setMapa,
   //randomNumber,
-  generateRandomNumber,
   personajeCoordenadas,
   setPersonajeCoordenadas,
 }: Props) => {
@@ -49,6 +47,7 @@ const World = ({
   const { isOpen: menuOpen, onToggle: menuOnToggle } = useToggle();
   const navigate = useNavigate();
   const { userData } = useContext(UserDataContext);
+  const { generateRandomNumber } = useDuelData();
 
   const moverPersonaje = (deltaX: number, deltaY: number) => {
     const newPosX = personajeCoordenadas.x + deltaX;

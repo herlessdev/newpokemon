@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import SelectOption from "../../components/shared/select-option";
 import { useLocation, useNavigate } from "react-router-dom";
 import useToggle from "../../hooks/useToggle";
+import { useDuelData } from "../../hooks/useDuel";
 
 const OptionsInventary = ({ selectedIndex }) => {
+  const { setSequence } = useDuelData();
   const navigate = useNavigate();
   const [selectIndexElement, setSelectIndexElement] = useState(0);
   const [selectIndexUse, setSelectIndexUse] = useState(0);
@@ -37,7 +39,10 @@ const OptionsInventary = ({ selectedIndex }) => {
         duel: [
           {
             name: "USE",
-            action: () => navigate(`/${someProp}`),
+            action: () => {
+              setSequence("capture");
+              navigate(`/${someProp}`);
+            },
           },
           {
             name: "LEAVE",
@@ -65,7 +70,7 @@ const OptionsInventary = ({ selectedIndex }) => {
   ];
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key.toLocaleLowerCase() === "x") {
+      if (event.key.toLocaleLowerCase() === "z") {
         const selectedOption =
           InventaryList[selectedIndex]?.options?.[selectIndexElement];
         if (isOpen) {
