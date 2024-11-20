@@ -64,7 +64,7 @@ const OptionsInventary = ({ selectedIndex }: Props) => {
             {
               name: "USE",
               action: () => {
-                setSequence("capture");
+                setSequence("throw-pokeball");
                 navigate(`/${someProp}`);
               },
             },

@@ -20,9 +20,10 @@ const Duel = () => {
   const { userData, setUserData } = useContext(UserDataContext);
   const pokemonData = useContext(PokemonDataContext);
   const { randomNumber, sequence, setSequence } = useDuelData();
-
   const [textDuel, setTextDuel] = useState("");
   const { displayText, finishedTyping } = useTypingEffect(textDuel, 20);
+  const [selectOpt, setSelectOpt] = useState({ row: 0, column: 0 });
+  const [selectOptFight, setSelectOptFight] = useState({ row: 0, column: 0 });
 
   const sequenceConditions: Partial<Record<Sequence, boolean>> = {
     inicio: !finishedTyping,
@@ -128,8 +129,6 @@ const Duel = () => {
     },
   };
 
-  const [selectOpt, setSelectOpt] = useState({ row: 0, column: 0 });
-
   const optionsDuel = [
     [
       { name: "fight", action: () => setSequence("fight") },
@@ -149,8 +148,6 @@ const Duel = () => {
       },
     ],
   ];
-
-  const [selectOptFight, setSelectOptFight] = useState({ row: 0, column: 0 });
 
   const optionsFight = [
     ["Impactrueno", "-"],
@@ -276,7 +273,9 @@ const Duel = () => {
     );
     setPokemonUserList(mappedPokemons);
   }, []);
+  
   console.log(sequence);
+
   return (
     <div className="relative w-full h-full">
       <div className={cx("duel-bg-green")}>
