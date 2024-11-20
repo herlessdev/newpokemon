@@ -252,9 +252,63 @@ interface PokemonData {
     };
   }[];
   weight: number;
-  gender_rate: number
+  gender_rate: number;
 }
 
-interface DuelParams {
+type Sequence =
+  | "inicio"
+  | "invocar"
+  | "effect"
+  | "trans-options"
+  | "receive-attack"
+  | "give-experience"
+  | "finish-duel"
+  | "options"
+  | "fight"
+  | "attack"
 
+type PokemonLocation = {
+  place: "team" | "box" | "unknown";
+  position?: number;
+};
+
+type StatusCondition =
+  | "none"
+  | "paralyzed"
+  | "poisoned"
+  | "badly poisoned"
+  | "burned"
+  | "frozen"
+  | "sleeping";
+
+interface UserData {
+  pokemons: [
+    {
+      captured_at: string;
+      evs: {
+        attack: number;
+        defense: number;
+        hp: number;
+        specialAttack: number;
+        specialDefense: number;
+        speed: number;
+      };
+      hp: number;
+      ivs: {
+        attack: number;
+        defense: number;
+        hp: number;
+        specialAttack: number;
+        specialDefense: number;
+        speed: number;
+      };
+      level: number;
+      location: PokemonLocation;
+      pokemon_id: number;
+      pokemon_number: number;
+      status: number;
+      xp: number;
+    }
+  ];
+  user: [number, string, string, number, number, string];
 }

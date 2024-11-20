@@ -1,32 +1,39 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SelectOption from "../../components/shared/select-option";
 import { useNavigate } from "react-router-dom";
 
-const Menu = ({ userData, menuOnToggle }) => {
-  const navigate = useNavigate();
+interface Props {
+  userData: UserData;
+  menuOnToggle: () => void;
+}
 
-  const optionsMenu = [
-    {
-      name: "POKéDEX",
-      action: () => navigate("/pokedex"),
-    },
-    { name: "POKéMON", action: () => navigate("/team") },
-    {
-      name: "BAG",
-      action: () => navigate("/bag", { state: { someProp: "world" } }),
-    },
-    {
-      name: userData?.user?.[1],
-      action: () => navigate(`/profile/${userData?.user?.[1]}`),
-    },
-    { name: "SAVE", action: () => menuOnToggle() }, // función que maneje la lógica de guardado
-    { name: "OPTION", action: () => navigate("/options") }, // función que maneje las opciones
-    { name: "EXIT", action: () => menuOnToggle() },
-  ];
+const Menu = ({ userData, menuOnToggle }: Props) => {
+  const navigate = useNavigate();
+  const optionsMenu = useMemo(
+    () => [
+      {
+        name: "POKéDEX",
+        action: () => navigate("/pokedex"),
+      },
+      { name: "POKéMON", action: () => navigate("/team") },
+      {
+        name: "BAG",
+        action: () => navigate("/bag", { state: { someProp: "world" } }),
+      },
+      {
+        name: userData?.user?.[1],
+        action: () => navigate(`/profile/${userData?.user?.[1]}`),
+      },
+      { name: "SAVE", action: () => menuOnToggle() },
+      { name: "OPTION", action: () => navigate("/options") },
+      { name: "EXIT", action: () => menuOnToggle() },
+    ],
+    [navigate, menuOnToggle, userData]
+  );
   const [indexOptionMenu, setIndexOptionMenu] = useState<number>(0);
 
   useEffect(() => {
-    const handleKeyPress = (event) => {
+    const handleKeyPress = (event: KeyboardEvent) => {
       switch (event.key) {
         case "x":
           optionsMenu[indexOptionMenu]?.action();
@@ -43,7 +50,7 @@ const Menu = ({ userData, menuOnToggle }) => {
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
-  }, [indexOptionMenu, menuOnToggle, navigate]);
+  }, [indexOptionMenu, menuOnToggle, navigate, optionsMenu]);
 
   return (
     <SelectOption

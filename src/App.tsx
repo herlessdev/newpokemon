@@ -5,7 +5,6 @@ import StartGame from "./app/start-game/page";
 import NewGame from "./app/selec-menu/new-game/page";
 import World from "./app/world/page";
 import Duel from "./app/duel/page";
-import useRandomNumber from "./hooks/useRandomNumber";
 import { useContext, useEffect, useState } from "react";
 import Options from "./app/selec-menu/options/page";
 import map_1 from "./data/maps";

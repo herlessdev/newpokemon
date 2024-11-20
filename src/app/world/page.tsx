@@ -30,7 +30,6 @@ interface Props {
 const World = ({
   mapa,
   setMapa,
-  //randomNumber,
   personajeCoordenadas,
   setPersonajeCoordenadas,
 }: Props) => {
@@ -202,7 +201,7 @@ const World = ({
     if (
       mapa[personajeCoordenadas.x][personajeCoordenadas.y].plant?.name ===
         "hierva" &&
-      probability(0.2)
+      probability(1)
     ) {
       setEvent(true);
     }

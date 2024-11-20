@@ -1,11 +1,11 @@
 import React, { createContext, useState, ReactNode } from "react";
 import useRandomNumber from "../hooks/useRandomNumber";
 
-type DuelDataContextType = {
+export type DuelDataContextType = {
   randomNumber: number | null;
   generateRandomNumber: () => void;
-  sequence: string;
-  setSequence: (sequence: string) => void;
+  sequence: Sequence;
+  setSequence: (sequence: Sequence) => void;
 };
 
 export const DuelDataContext = createContext<DuelDataContextType | undefined>(
@@ -16,7 +16,7 @@ export const DuelDataProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const { randomNumber, generateRandomNumber } = useRandomNumber();
-  const [sequence, setSequence] = useState<string>("inicio");
+  const [sequence, setSequence] = useState<Sequence>("inicio");
   console.log(sequence)
   return (
     <DuelDataContext.Provider value={{ randomNumber, generateRandomNumber, sequence, setSequence }}>

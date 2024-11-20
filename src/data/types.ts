@@ -39,15 +39,6 @@ export class Element extends Personaje {
   }
 }
 
-export type StatusCondition =
-  | "none"
-  | "paralyzed"
-  | "poisoned"
-  | "badly poisoned"
-  | "burned"
-  | "frozen"
-  | "sleeping";
-
 export class Pokemon {
   pokemon_id?: number;
   pokemon_number: number;
@@ -71,7 +62,7 @@ export class Pokemon {
   };
   stats: { max_hp: number; current_hp: number };
   status: StatusCondition;
-  location: any;
+  location: PokemonLocation;
   xp: number;
 
   constructor(
@@ -149,7 +140,7 @@ export class Pokemon {
     };
     this.stats = this.calculateStats();
   }
-  updateLocation(newLocation: { place: string; position: number }) {
+  updateLocation(newLocation: PokemonLocation) {
     this.location = newLocation;
   }
 
