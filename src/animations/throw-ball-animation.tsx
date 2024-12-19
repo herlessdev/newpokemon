@@ -11,7 +11,6 @@ const ThrowBallAnimation: React.FC = () => {
   const ballRadius = 10; // Tamaño de la esfera (Pokébola)
   const spriteWidth = 16; // Ancho de cada fotograma del sprite
   const spriteHeight = 16; // Alto de cada fotograma del sprite
-  const spriteColumns = 5; // Número de columnas en el sprite
 
   useEffect(() => {
     const canvas = canvasRef.current;
