@@ -5,7 +5,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { HashRouter } from "react-router-dom";
 import { UserDataProvider } from "./context/UserDataProvider.tsx";
 import { PokemonDataProvider } from "./context/PokemonDataProvider.tsx";
-import { DuelDataProvider } from "./context/DuelDataProvider.tsx";
+import { DuelDataProvider } from "./context/duel-data-provider/DuelDataProvider.tsx";
+import { BagDataProvider } from "./context/bag-data-provider/BagDataProvider.tsx";
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -14,7 +15,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <UserDataProvider>
         <PokemonDataProvider>
           <DuelDataProvider>
-            <App />
+            <BagDataProvider>
+              <App />
+            </BagDataProvider>
           </DuelDataProvider>
         </PokemonDataProvider>
       </UserDataProvider>

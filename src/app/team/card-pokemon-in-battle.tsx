@@ -9,7 +9,7 @@ interface Props {
 const CardPokemonInBattle = ({ pokemon }: Props) => {
   const pokemonData = useContext(PokemonDataContext);
   const navigate = useNavigate();
-  console.log(pokemonData?.[pokemon?.pokemon_number - 1]);
+  console.log(pokemon);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

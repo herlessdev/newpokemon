@@ -2,7 +2,7 @@ import { useContext } from "react";
 import {
   DuelDataContext,
   DuelDataContextType,
-} from "../context/DuelDataProvider";
+} from "./DuelDataProvider";
 
 export const useDuelData = (): DuelDataContextType => {
   const context = useContext(DuelDataContext);

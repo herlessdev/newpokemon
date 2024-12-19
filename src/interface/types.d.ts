@@ -266,7 +266,9 @@ type Sequence =
   | "options"
   | "fight"
   | "attack"
-  | "throw-pokeball";
+  | "throw-pokeball"
+  | "capturing"
+  | "captured";
 
 type PokemonLocation = {
   place: "team" | "box" | "unknown";

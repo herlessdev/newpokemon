@@ -7,7 +7,7 @@ import CardPokemonInBattle from "./card-pokemon-in-battle";
 const Team = () => {
   const { userData } = useContext(UserDataContext);
   const pokemonData = useContext<PokemonData[]>(PokemonDataContext);
-  console.log(pokemonData);
+  console.log(userData);
   const [team] = useState(() => {
     const filteredTeam = userData.pokemons
       .filter(

@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import SelectOption from "../../components/shared/select-option";
 import { useLocation, useNavigate } from "react-router-dom";
 import useToggle from "../../hooks/useToggle";
-import { useDuelData } from "../../hooks/useDuel";
+import { useDuelData } from "../../context/duel-data-provider/useDuel";
 
 interface Props {
   selectedIndex: number;
@@ -28,12 +28,12 @@ interface InventaryProps {
 }
 
 const OptionsInventary = ({ selectedIndex }: Props) => {
-  const { setSequence } = useDuelData();
+  const { setSequence, setUsedItem } = useDuelData();
+  const { isOpen, onToggle } = useToggle();
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectIndexElement, setSelectIndexElement] = useState(0);
   const [selectIndexUse, setSelectIndexUse] = useState(0);
-  const { isOpen, onToggle } = useToggle();
-  const location = useLocation();
   const { someProp }: { someProp?: "world" | "duel" } = location.state || {};
 
   const InventaryList = useMemo<InventaryProps[]>(
@@ -94,7 +94,7 @@ const OptionsInventary = ({ selectedIndex }: Props) => {
     ],
     [navigate, someProp, onToggle, setSequence]
   );
-  console.log(someProp);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key.toLocaleLowerCase() === "z") {
@@ -106,6 +106,7 @@ const OptionsInventary = ({ selectedIndex }: Props) => {
             const currentUseOptions = currentInventory?.useOptions?.[someProp];
             const selectedUseOption = currentUseOptions?.[selectIndexUse];
             setSelectIndexUse(0);
+            setUsedItem(selectedOption.name);
             selectedUseOption?.action();
           }
         } else {
@@ -125,6 +126,7 @@ const OptionsInventary = ({ selectedIndex }: Props) => {
     selectedIndex,
     selectIndexElement,
     someProp,
+    setUsedItem,
   ]);
 
   return (

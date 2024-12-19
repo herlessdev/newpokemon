@@ -12,14 +12,16 @@ import { useNavigate } from "react-router-dom";
 import { Pokemon } from "../../data/types";
 import { UserDataContext } from "../../context/UserDataProvider";
 import SelectOptionMultipleDirection from "../../components/shared/select-option-multiple-direction";
-import { useDuelData } from "../../hooks/useDuel";
+import { useDuelData } from "../../context/duel-data-provider/useDuel";
 import WritingText from "../../components/shared/writing-text";
+import ThrowBallAnimation from "../../animations/throw-ball-animation";
+import CapturingAnimation from "../../animations/capturing-animation";
 
 const Duel = () => {
   const navigate = useNavigate();
   const { userData, setUserData } = useContext(UserDataContext);
   const pokemonData = useContext(PokemonDataContext);
-  const { randomNumber, sequence, setSequence } = useDuelData();
+  const { randomNumber, sequence, setSequence, usedItem } = useDuelData();
   const [textDuel, setTextDuel] = useState("");
   const { displayText, finishedTyping } = useTypingEffect(textDuel, 20);
   const [selectOpt, setSelectOpt] = useState({ row: 0, column: 0 });
@@ -33,19 +35,21 @@ const Duel = () => {
     "receive-attack": true,
     "give-experience": true,
     "finish-duel": true,
+    "throw-pokeball": true,
+    captured: true,
   };
 
   const sequenceActions: Partial<
-    Record<Sequence, { action: (pokemon: string) => void }>
+    Record<Sequence, { action: (args: { [key: string]: string }) => void }>
   > = {
     inicio: {
-      action: (pokemon: string) => {
+      action: ({ pokemon }) => {
         setTextDuel(`Wild ${pokemon} appeared!`);
         setSequence("invocar");
       },
     },
     invocar: {
-      action: (pokemon: string) => {
+      action: ({ pokemon }) => {
         setTimeout(() => {
           setTextDuel(`Go! ${pokemon}!`);
           setSequence("effect");
@@ -53,7 +57,7 @@ const Duel = () => {
       },
     },
     effect: {
-      action: (pokemon: string) => {
+      action: ({ pokemon }) => {
         setTimeout(() => {
           //manejar probabilidad de effect, hacerlo escalable
           if (probability(0)) {
@@ -123,6 +127,24 @@ const Duel = () => {
           updateUserDataWithPokemonList();
         }
         setTimeout(() => {
+          navigate("/world");
+        }, 1250);
+      },
+    },
+    "throw-pokeball": {
+      action: ({ user, pokeball }) => {
+        setTextDuel(`${user} used ${pokeball}`);
+      },
+    },
+    captured: {
+      action: () => {
+        setTextDuel(
+          `${pokemonData?.[
+            NumberEnemyPokemonData
+          ]?.name.toUpperCase()} ha sido capturado`
+        );
+        setTimeout(() => {
+          setSequence("inicio");
           navigate("/world");
         }, 1250);
       },
@@ -207,10 +229,14 @@ const Duel = () => {
         ]?.name.toUpperCase();
 
       if (sequenceConditions[sequence]) {
-        sequenceActions[sequence]?.action(namePokemonSelect);
+        sequenceActions[sequence]?.action({
+          pokemon: namePokemonSelect,
+          pokeball: usedItem ?? "",
+          user: userData?.user?.[1],
+        });
       }
     }
-  }, [pokemonData, finishedTyping, pokemonUserList]);
+  }, [pokemonData, finishedTyping, pokemonUserList, sequence]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -243,6 +269,7 @@ const Duel = () => {
     };
   }, [sequence, selectOpt, selectOptFight, navigate]);
 
+  //stats
   useEffect(() => {
     const mappedPokemons = pokemonsUser?.map(
       (filteredPokemon: any, i: number) => {
@@ -273,45 +300,56 @@ const Duel = () => {
     );
     setPokemonUserList(mappedPokemons);
   }, []);
-  
+
   console.log(sequence);
 
   return (
     <div className="relative w-full h-full">
       <div className={cx("duel-bg-green")}>
         {/*pokemon enemy*/}
-        <PlatformDuel className="top-1/4 right-0 absolute">
-          {listPokemon &&
-            randomNumber != null &&
-            listPokemon[randomNumber] != null && (
-              <img
-                alt="pokemon-enemy"
-                src={
-                  pokemonData[NumberEnemyPokemonData]?.sprites?.versions?.[
-                    "generation-iii"
-                  ]?.emerald?.["front_default"]
-                }
-                className={cx(
-                  "w-[100px] bottom-0 translate-y-[-25%] left-1/2 absolute translate-x-[-50%]"
-                )}
-                style={{
-                  transition: "filter 0.3s",
-                  filter:
-                    sequence === "attack" ? "brightness(0) invert(1)" : "",
-                }}
-              />
-            )}
+        {pokemonEnemy && (
+          <PlatformDuel className="top-1/4 right-0 absolute">
+            {listPokemon &&
+              randomNumber != null &&
+              listPokemon[randomNumber] != null && (
+                <motion.img
+                  alt="pokemon-enemy"
+                  src={
+                    pokemonData[NumberEnemyPokemonData]?.sprites?.versions?.[
+                      "generation-iii"
+                    ]?.emerald?.["front_default"]
+                  }
+                  className={cx("w-[100px] bottom-0 left-1/2 absolute")}
+                  style={{
+                    transition: "filter 0.3s",
+                    filter:
+                      sequence === "attack" ? "brightness(0) invert(1)" : "",
+                  }}
+                  initial={false}
+                  animate={
+                    sequence === "capturing" || sequence === "captured"
+                      ? { scale: 0, opacity: 0, y: "-25%", x: "-50%" }
+                      : { scale: 1, opacity: 1, y: "-25%", x: "-50%" }
+                  }
+                  transition={
+                    sequence === "capturing" || sequence === "captured"
+                      ? { duration: 0.6, ease: "easeInOut" }
+                      : { duration: 0 }
+                  }
+                />
+              )}
 
-          <BarPokemon
-            gender_rate={pokemonData?.[NumberEnemyPokemonData]?.gender_rate}
-            statePokemon={pokemonEnemy?.status}
-            name={pokemonData?.[NumberEnemyPokemonData]?.name.toUpperCase()}
-            lvl={pokemonEnemy.level}
-            className={"absolute bottom-[125%] right-[125%]"}
-            max_hp={pokemonEnemy.stats.max_hp}
-            current_hp={pokemonEnemy.stats.current_hp}
-          />
-        </PlatformDuel>
+            <BarPokemon
+              gender_rate={pokemonData?.[NumberEnemyPokemonData]?.gender_rate}
+              statePokemon={pokemonEnemy?.status}
+              name={pokemonData?.[NumberEnemyPokemonData]?.name.toUpperCase()}
+              lvl={pokemonEnemy.level}
+              className={"absolute bottom-[125%] right-[125%]"}
+              max_hp={pokemonEnemy.stats.max_hp}
+              current_hp={pokemonEnemy.stats.current_hp}
+            />
+          </PlatformDuel>
+        )}
         {/*pokemon user */}
         {pokemonUserList && (
           <>
@@ -365,14 +403,13 @@ const Duel = () => {
             )}
 
             <DivText className="bottom-0 absolute w-full">
-              {sequence !== "options" && sequence !== "fight" && displayText}
+              {sequence !== "options" &&
+                sequence !== "fight" &&
+                sequence !== "throw-pokeball" &&
+                displayText}
 
               {sequence === "options" && (
                 <>
-                  {/*`What will ${pokemonData?.[
-                pokemonUserList?.[0]?.pokemon_number - 1
-              ]?.name.toUpperCase()} do?`*/}
-                  {}
                   <WritingText
                     className="w-[48%]"
                     text={
@@ -400,6 +437,16 @@ const Duel = () => {
                   options={optionsFight}
                   className="w-full absolute right-0 top-0 p-4 border-[7px] rounded-[8px] text-3xl font-mono"
                 />
+              )}
+              {sequence === "throw-pokeball" && (
+                <>
+                  <WritingText className="w-[48%]" text={displayText} />
+                  {finishedTyping && <ThrowBallAnimation />}
+                </>
+              )}
+
+              {(sequence === "capturing" || sequence === "captured") && (
+                <CapturingAnimation />
               )}
             </DivText>
           </>

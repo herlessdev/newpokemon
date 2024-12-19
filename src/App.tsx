@@ -15,7 +15,7 @@ import Bag from "./app/bag/page";
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { userData, setUserData } = useContext(UserDataContext);
+  const { setUserData } = useContext(UserDataContext);
   const location = useLocation();
   const [personajeCoordenadas, setPersonajeCoordenadas] = useState({
     x: 0,
@@ -29,7 +29,6 @@ function App() {
     }
   }, [location]);
 
-  console.log(userData);
   return (
     <div className="w-[750px] h-[490px] overflow relative font-nova">
       <Routes>

@@ -11,7 +11,7 @@ const mockPartida: UserData = {
         specialDefense: 40,
         speed: 70,
       },
-      hp: 100,
+      hp: 617,
       ivs: {
         attack: 31,
         defense: 31,
@@ -25,7 +25,7 @@ const mockPartida: UserData = {
       pokemon_id: 1,
       pokemon_number: 150,
       status: 0,
-      xp: 200,
+      xp: 5500000,
     },
   ],
 };

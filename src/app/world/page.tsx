@@ -13,7 +13,7 @@ import DivText from "../../components/shared/div-text";
 import useToggle from "../../hooks/useToggle";
 import { UserDataContext } from "../../context/UserDataProvider";
 import Menu from "./menu";
-import { useDuelData } from "../../hooks/useDuel";
+import { useDuelData } from "../../context/duel-data-provider/useDuel";
 
 type PersonajeCoordenadas = {
   x: number;
@@ -79,8 +79,6 @@ const World = ({
       }
     }
   };
-
-  console.log(userData);
 
   useEffect(() => {
     if (debounce) {
@@ -201,7 +199,7 @@ const World = ({
     if (
       mapa[personajeCoordenadas.x][personajeCoordenadas.y].plant?.name ===
         "hierva" &&
-      probability(1)
+      probability(0.2)
     ) {
       setEvent(true);
     }
