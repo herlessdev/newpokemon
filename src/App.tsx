@@ -12,6 +12,7 @@ import map_1 from "./data/maps";
 import { UserDataContext } from "./context/UserDataProvider";
 import Team from "./app/team/page";
 import Bag from "./app/bag/page";
+import Pokedex from "./app/pokedex/page";
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,7 +23,7 @@ function App() {
     y: 10,
   });
   const [mapa, setMapa] = useState(map_1);
-
+console.log(isNaN(1.223))
   useEffect(() => {
     if (location.pathname === "/") {
       setUserData([]);
@@ -30,7 +31,7 @@ function App() {
   }, [location]);
 
   return (
-    <div className="w-[750px] h-[490px] overflow relative font-nova">
+    <div className="w-[750px] h-[490px] overflow relative font-nova select-none">
       <Routes>
         <Route path="/" element={<StartGame />} />
         <Route path="/select-menu" element={<SelectMenu />} />
@@ -50,6 +51,7 @@ function App() {
         <Route path="/duel" element={<Duel />} />
         <Route path="/team" element={<Team />} />
         <Route path="/bag" element={<Bag />} />
+        <Route path="/pokedex" element={<Pokedex />} />
       </Routes>
       <div id="portal" />
     </div>

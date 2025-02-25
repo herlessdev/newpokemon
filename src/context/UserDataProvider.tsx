@@ -1,7 +1,7 @@
 import React, { createContext, useState, ReactNode } from "react";
 import mockPartida from "../mock/user";
 
-const mockToogle = false;
+const mockToogle = true;
 export const UserDataContext = createContext<any>([]);
 
 export const UserDataProvider: React.FC<{ children: ReactNode }> = ({
