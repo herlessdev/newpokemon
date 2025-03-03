@@ -35,7 +35,7 @@ const OptionsInventary = ({ selectedIndex }: Props) => {
   const [selectIndexElement, setSelectIndexElement] = useState(0);
   const [selectIndexUse, setSelectIndexUse] = useState(0);
   const { someProp }: { someProp?: "world" | "duel" } = location.state || {};
-
+  console.log(someProp)
   const InventaryList = useMemo<InventaryProps[]>(
     () => [
       {

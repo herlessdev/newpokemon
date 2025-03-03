@@ -24,10 +24,11 @@ const SelectMenu = () => {
   const { isLoading, isError } = useQuery("partidas", cargarPartidas, {
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
-      const partidasObject = data.map((partida: string[]) => {
+      const partidasObject = data.map((partida: User) => {
+        console.log(partida);
         return {
-          ID: partida[0],
-          PLAYER: partida[1],
+          ID: partida?.user_id,
+          PLAYER: partida?.name,
           TIME: "0:00",
           BADGES: 0,
         };

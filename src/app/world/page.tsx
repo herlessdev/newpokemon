@@ -7,7 +7,7 @@ import {
 } from "react";
 import "./style.css";
 import { bruno, mapaProps, probability } from "../../data/data";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useTypingEffect from "../../hooks/useTypingEffect";
 import DivText from "../../components/shared/div-text";
 import useToggle from "../../hooks/useToggle";
@@ -47,7 +47,9 @@ const World = ({
   const navigate = useNavigate();
   const { userData } = useContext(UserDataContext);
   const { generateRandomNumber } = useDuelData();
-
+  const location = useLocation();
+  const { someProp }: { someProp?: "profile" } = location.state || {};
+  console.log(userData);
   const moverPersonaje = (deltaX: number, deltaY: number) => {
     const newPosX = personajeCoordenadas.x + deltaX;
     const newPosY = personajeCoordenadas.y + deltaY;
@@ -221,6 +223,12 @@ const World = ({
     mapa,
     generateRandomNumber,
   ]);
+
+  useEffect(() => {
+    if (location.state?.someProp) {
+      menuOnToggle();
+    }
+  }, [location.state]);
 
   return (
     <>

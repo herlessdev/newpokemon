@@ -13,6 +13,7 @@ import { UserDataContext } from "./context/UserDataProvider";
 import Team from "./app/team/page";
 import Bag from "./app/bag/page";
 import Pokedex from "./app/pokedex/page";
+import Profile from "./app/profile/page";
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,12 +24,11 @@ function App() {
     y: 10,
   });
   const [mapa, setMapa] = useState(map_1);
-console.log(isNaN(1.223))
   useEffect(() => {
     if (location.pathname === "/") {
       setUserData([]);
     }
-  }, [location]);
+  }, [location, setUserData]);
 
   return (
     <div className="w-[750px] h-[490px] overflow relative font-nova select-none">
@@ -52,6 +52,7 @@ console.log(isNaN(1.223))
         <Route path="/team" element={<Team />} />
         <Route path="/bag" element={<Bag />} />
         <Route path="/pokedex" element={<Pokedex />} />
+        <Route path="/profile/:username" element={<Profile />} />
       </Routes>
       <div id="portal" />
     </div>

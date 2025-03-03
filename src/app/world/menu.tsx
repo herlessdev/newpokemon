@@ -21,8 +21,8 @@ const Menu = ({ userData, menuOnToggle }: Props) => {
         action: () => navigate("/bag", { state: { someProp: "world" } }),
       },
       {
-        name: userData?.user?.[1],
-        action: () => navigate(`/profile/${userData?.user?.[1]}`),
+        name: userData?.user?.name,
+        action: () => navigate(`/profile/${userData?.user?.name}`),
       },
       { name: "SAVE", action: () => menuOnToggle() },
       { name: "OPTION", action: () => navigate("/options") },

@@ -2,46 +2,17 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { PokemonDataContext } from "../../context/PokemonDataProvider";
 import cx from "../../lib/cx";
 import { UserDataContext } from "../../context/UserDataProvider";
+import BarScroll from "./barScroll";
+import { useNavigate } from "react-router-dom";
 
 const Pokedex = () => {
   const staticCanvasRef = useRef<HTMLCanvasElement>(null);
-  const dynamicCanvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const currentSyRef = useRef(25); // Posición actual animada
-  const currentDwRef = useRef(95); // Ancho actual
   const isAnimatingRef = useRef(false);
-  const animationFrameRef = useRef<number | null>(null);
   const pokemonData = useContext<PokemonData[]>(PokemonDataContext);
   const { userData } = useContext(UserDataContext);
-  console.log(pokemonData);
-  useEffect(() => {
-    const canvas = dynamicCanvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const navigate = useNavigate()
 
-    const img = new Image();
-    img.src = `${import.meta.env.BASE_URL}sprites/miscellaneous.png`;
-
-    const drawCanvas = (dynamicSy: number, dynamicDw: number) => {
-      // Limpiar el canvas antes de redibujar
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // Dibuja el indicador dinámico
-      ctx.drawImage(img, 506, dynamicSy, 75, 12.5, 32, 10, dynamicDw, 10);
-    };
-
-    img.onload = () => {
-      const dynamicSy = selectedIndex * currentSyRef.current + 25; // Ejemplo de cálculo
-      drawCanvas(dynamicSy, currentDwRef.current);
-    };
-
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [selectedIndex]);
-  console.log(userData);
   useEffect(() => {
     const canvas = staticCanvasRef.current;
     if (!canvas) return;
@@ -67,15 +38,19 @@ const Pokedex = () => {
       if (event.key === "ArrowUp" && selectedIndex > 0) {
         setSelectedIndex((prev) => prev - 1);
       }
+      if (event.key.toLocaleLowerCase() === "z") {
+        navigate('/world')
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedIndex]);
+  }, [navigate, selectedIndex]);
 
   return (
     <div className="relative w-full h-full bg-[blue]">
       <canvas ref={staticCanvasRef} className="w-full h-full absolute" />
+      <BarScroll selectedIndex={selectedIndex} />
       <div className="w-[200px] h-[340px] rounded-md left-[26.75%] top-1/2 translate-y-[-50%] overflow-hidden absolute">
         {pokemonData?.map((pkm, i) => (
           <img
@@ -95,7 +70,8 @@ const Pokedex = () => {
           pokemonData &&
           pokemonData?.map((pkm, i) => {
             const isCaptured = userData?.pokemons?.some(
-              (pokemon: { pokemon_number: number }) => pokemon?.pokemon_number === i + 1
+              (pokemon: { pokemon_number: number }) =>
+                pokemon?.pokemon_number === i + 1
             );
             return (
               <p

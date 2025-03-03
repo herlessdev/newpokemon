@@ -55,7 +55,7 @@ const Bag = () => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (isAnimatingRef.current) return; // Ignorar si la animación está en progreso
+      if (isAnimatingRef.current) return; 
 
       if (event.key === "ArrowRight") {
         setSelectedIndex((prev) => (prev + 1) % 2);

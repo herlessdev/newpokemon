@@ -313,5 +313,12 @@ interface UserData {
       xp: number;
     }
   ];
-  user: [number, string, string, number, number, string];
+  user: User
+}
+
+interface User {
+  createdAt: string; // Puedes cambiarlo a Date si lo parseas después
+  gender: "BOY" | "GIRL" | string; // Enum si solo hay valores fijos
+  name: string;
+  user_id: number;
 }
