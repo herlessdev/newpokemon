@@ -3,7 +3,8 @@ import { PokemonDataContext } from "../../context/PokemonDataProvider";
 import cx from "../../lib/cx";
 import { UserDataContext } from "../../context/UserDataProvider";
 import BarScroll from "./barScroll";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { controls } from "../../data/controllers";
 
 const Pokedex = () => {
   const staticCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -11,7 +12,8 @@ const Pokedex = () => {
   const isAnimatingRef = useRef(false);
   const pokemonData = useContext<PokemonData[]>(PokemonDataContext);
   const { userData } = useContext(UserDataContext);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const canvas = staticCanvasRef.current;
@@ -38,8 +40,11 @@ const Pokedex = () => {
       if (event.key === "ArrowUp" && selectedIndex > 0) {
         setSelectedIndex((prev) => prev - 1);
       }
-      if (event.key.toLocaleLowerCase() === "z") {
-        navigate('/world')
+      if (
+        event?.key?.toLowerCase() === controls?.menú ||
+        event?.key?.toLowerCase() === controls?.retroceder
+      ) {
+        navigate("/world", { state: { someProp: { location } } });
       }
     };
 
@@ -52,18 +57,22 @@ const Pokedex = () => {
       <canvas ref={staticCanvasRef} className="w-full h-full absolute" />
       <BarScroll selectedIndex={selectedIndex} />
       <div className="w-[200px] h-[340px] rounded-md left-[26.75%] top-1/2 translate-y-[-50%] overflow-hidden absolute">
-        {pokemonData?.map((pkm, i) => (
-          <img
-            src={pkm?.sprites?.front_default}
-            alt={(i + 1).toString()}
-            style={{
-              transform: `translateY(${
-                -50 - 170 * selectedIndex + 170 * i
-              }%) translateX(-50%) scale(2)`,
-            }}
-            className={cx("absolute left-1/2 top-1/2 duration-300")}
-          />
-        ))}
+        {pokemonData?.map((pkm, i) => {
+          // buscar si ha sido visualizado
+          return (
+            <img
+              key={i}
+              src={pkm?.sprites?.front_default}
+              alt={(i + 1).toString()}
+              style={{
+                transform: `translateY(${
+                  -50 - 170 * selectedIndex + 170 * i
+                }%) translateX(-50%) scale(2)`,
+              }}
+              className={cx("absolute left-1/2 top-1/2 duration-300")}
+            />
+          );
+        })}
       </div>
       <div className="w-[278px] h-[400px] rounded-md translate-y-[-50%] overflow-hidden absolute left-[58%] top-1/2">
         {userData &&

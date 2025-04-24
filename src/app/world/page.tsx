@@ -225,7 +225,7 @@ const World = ({
   ]);
 
   useEffect(() => {
-    if (location.state?.someProp) {
+    if (someProp) {
       menuOnToggle();
     }
   }, [location.state]);

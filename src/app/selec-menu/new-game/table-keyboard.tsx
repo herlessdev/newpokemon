@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, Dispatch, SetStateAction } from "react";
 import { motion } from "framer-motion";
 import cx from "../../../lib/cx";
+import { controls } from "../../../data/controllers";
 
 const allGroup: string[] = [
   "AGMT",
@@ -43,7 +44,7 @@ export default function TableKeyboard({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleKeyDown = (event: any) => {
-    const tecla = event.key;
+    const tecla = event?.key?.toLowerCase();
 
     const centroX = selectedElement
       ? (selectedElement.offsetLeft + selectedElement.offsetRight) / 2
@@ -52,7 +53,7 @@ export default function TableKeyboard({
       ? (selectedElement.offsetTop + selectedElement.offsetBottom) / 2
       : 0;
 
-    if (tecla === "ArrowRight") {
+    if (tecla === "arrowright") {
       let elementoSeleccionado;
       let distanciaMinima = Infinity;
 
@@ -72,7 +73,7 @@ export default function TableKeyboard({
         setSelectedElement(elementoSeleccionado);
       }
     }
-    if (tecla === "ArrowLeft") {
+    if (tecla === "arrowleft") {
       let elementoSeleccionado;
       let distanciaMinima = Infinity;
 
@@ -92,7 +93,7 @@ export default function TableKeyboard({
         setSelectedElement(elementoSeleccionado);
       }
     }
-    if (tecla === "ArrowUp") {
+    if (tecla === "arrowup") {
       let elementoSeleccionado;
       let distanciaMinima = Infinity;
 
@@ -112,7 +113,7 @@ export default function TableKeyboard({
         setSelectedElement(elementoSeleccionado);
       }
     }
-    if (tecla === "ArrowDown") {
+    if (tecla === "arrowdown") {
       let elementoSeleccionado;
       let distanciaMinima = Infinity;
 
@@ -133,15 +134,17 @@ export default function TableKeyboard({
       }
     }
 
-    if (tecla.toLowerCase() === "x" && name.length <= 6) {
-      setName(name + selectedElement?.element);
+    if (tecla === controls?.interactuar && name.length <= 6) {
+      if (selectedElement?.element) {
+        setName(name + selectedElement?.element);
+      }
     }
 
-    if (tecla.toLowerCase() === "z") {
+    if (tecla === controls.retroceder) {
       setName(name.slice(0, name.length - 1));
     }
 
-    if (tecla === "Enter") {
+    if (tecla === controls?.menú) {
       setStep(0);
       setIndexDialogue(14);
     }

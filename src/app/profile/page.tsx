@@ -16,7 +16,6 @@ const Profile = () => {
 
   const { username } = useParams<{ username: string }>();
   const { userData } = useContext(UserDataContext);
-  console.log(userData?.pokemons?.length);
 
   useEffect(() => {
     const canvas = staticCanvasRef.current;
@@ -61,7 +60,7 @@ const Profile = () => {
         /* ID number */
         renderScoreDigits(ctx, img, 210, 5, 5, true, score);
         /* NAME */
-        renderCanvasCharacter(ctx, img, 36, userData?.user?.name);
+        username && renderCanvasCharacter(ctx, img, 36, username);
         /* MONEY (actualizar cuando haya money)*/
         renderScoreDigits(ctx, img, 160, 56, 0, false, 0);
         /* POKÉDEX */

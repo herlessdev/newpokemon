@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useMemo } from "react";
 import { UserDataContext } from "../../context/UserDataProvider";
 import { Pokemon } from "../../data/types";
 import { PokemonDataContext } from "../../context/PokemonDataProvider";
@@ -7,8 +7,8 @@ import CardPokemonInBattle from "./card-pokemon-in-battle";
 const Team = () => {
   const { userData } = useContext(UserDataContext);
   const pokemonData = useContext<PokemonData[]>(PokemonDataContext);
-  console.log(userData);
-  const [team] = useState(() => {
+
+  const team = useMemo(() => {
     const filteredTeam = userData.pokemons
       .filter(
         (x: { location: { place: string } }) => x.location.place === "team"
@@ -18,13 +18,18 @@ const Team = () => {
           pokemon_number: number;
           xp: number;
           pokemon_id: number | undefined;
-        }) =>
-          new Pokemon(
+        }) => {
+          const newPokemon = new Pokemon(
             pokemon.pokemon_number,
             pokemonData?.[pokemon?.pokemon_number - 1]?.stats[0]?.base_stat,
             pokemon.xp,
             pokemon.pokemon_id
-          )
+          );
+          if (pokemon?.ivs) {
+            newPokemon.updateIVs(pokemon.ivs);
+          }
+          return newPokemon;
+        }
       );
 
     const filledTeam = filteredTeam.concat(
@@ -32,22 +37,24 @@ const Team = () => {
     );
 
     return filledTeam.slice(0, 6);
-  });
+  }, []);
   console.log(team);
-  console.log(pokemonData);
 
   return (
     <section className="bg-[#8c9e29] w-full h-full pl-16 py-6 relative">
       <div className="bg-[#c4cb6f] w-full h-full rounded-tl-[2.5rem] flex gap-4">
         <CardPokemonInBattle pokemon={team[0]} />
         <div className="py-5 flex flex-col gap-1">
-          {team.slice(1).map((_uteam: any, i: number) => (
-            <div
-              key={i}
-              style={{ boxShadow: "inset -3px -3px 0px 0px #6a6a61" }}
-              className="border-2 border-[#6a6a61] rounded-md w-[475px] h-[70px]"
-            ></div>
-          ))}
+          {team &&
+            team
+              .slice(1)
+              .map((_uteam: any, i: number) => (
+                <div
+                  key={i}
+                  style={{ boxShadow: "inset -3px -3px 0px 0px #6a6a61" }}
+                  className="border-2 border-[#6a6a61] rounded-md w-[475px] h-[70px]"
+                ></div>
+              ))}
         </div>
       </div>
       <div className="flex absolute left-1 bottom-1 gap-1 items-center">

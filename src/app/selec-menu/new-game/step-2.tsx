@@ -3,16 +3,17 @@ import TableKeyboard from "./table-keyboard";
 import "./style.css";
 import cx from "../../../lib/cx";
 import ShowWords from "./show-words";
+import { controls } from "../../../data/controllers";
 
 interface Props {
   setStep: Dispatch<SetStateAction<number>>;
   setIndexDialogue: Dispatch<SetStateAction<number>>;
-  name: string,
+  name: string;
   setName: Dispatch<SetStateAction<string>>;
 }
 
 const Step2 = ({ setStep, setIndexDialogue, name, setName }: Props) => {
-
+  console.log(name)
   return (
     <div className="w-full h-full">
       <div className="h-8 bg-[#1071e7] flex gap-4 font-semibold text-lg">
@@ -26,13 +27,13 @@ const Step2 = ({ setStep, setIndexDialogue, name, setName }: Props) => {
         </div>
         <div className="flex gap-0.5 text-[white] items-center">
           <div className="bg-[white] text-[black] rounded-[5px] px-1 text-xs h-4.5">
-            A
+            {controls?.interactuar?.toUpperCase()}
           </div>{" "}
           OK
         </div>
         <div className="flex gap-0.5 text-[white] items-center">
           <div className="bg-[white] text-[black] rounded-[5px] px-1 text-xs h-4.5">
-            B
+          {controls?.retroceder?.toUpperCase()}
           </div>{" "}
           BACK
         </div>
@@ -44,7 +45,12 @@ const Step2 = ({ setStep, setIndexDialogue, name, setName }: Props) => {
         )}
       >
         <ShowWords name={name} />
-        <TableKeyboard name={name} setName={setName} setStep={setStep} setIndexDialogue={setIndexDialogue}/>
+        <TableKeyboard
+          name={name}
+          setName={setName}
+          setStep={setStep}
+          setIndexDialogue={setIndexDialogue}
+        />
       </div>
     </div>
   );

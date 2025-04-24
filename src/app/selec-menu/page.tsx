@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "react-query";
 import { cargarPartidaByID, cargarPartidas } from "../../services/get";
 import { UserDataContext } from "../../context/UserDataProvider";
+import { controls } from "../../data/controllers";
 
 interface OptionMenuProps {
   ID?: number;
@@ -49,7 +50,7 @@ const SelectMenu = () => {
         selectOpt < optionsMenu.length - 1
       ) {
         setSelectOpt((prevSelectOpt) => prevSelectOpt + 1);
-      } else if (event.key === "z") {
+      } else if (event.key.toLocaleLowerCase() === controls?.interactuar) {
         if (optionsMenu[selectOpt] === "NEW GAME") {
           navigate("/select-menu/new-game");
         }

@@ -18,7 +18,7 @@ export default function ShowWords({ name }: Props) {
     }, 150);
 
     return () => clearInterval(intervalId);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frameIndex]);
 
   return (

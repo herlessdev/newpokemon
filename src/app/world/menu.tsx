@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import SelectOption from "../../components/shared/select-option";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { controls } from "../../data/controllers";
 
 interface Props {
   userData: UserData;
@@ -9,16 +10,25 @@ interface Props {
 
 const Menu = ({ userData, menuOnToggle }: Props) => {
   const navigate = useNavigate();
+  const history = useLocation();
+
   const optionsMenu = useMemo(
     () => [
       {
         name: "POKéDEX",
         action: () => navigate("/pokedex"),
       },
-      { name: "POKéMON", action: () => navigate("/team") },
+      {
+        name: "POKéMON",
+        action: () =>
+          navigate("/team", {
+            state: { someProp: history?.pathname.slice(1) },
+          }),
+      },
       {
         name: "BAG",
-        action: () => navigate("/bag", { state: { someProp: "world" } }),
+        action: () =>
+          navigate("/bag", { state: { someProp: history?.pathname.slice(1) } }),
       },
       {
         name: userData?.user?.name,
@@ -35,7 +45,7 @@ const Menu = ({ userData, menuOnToggle }: Props) => {
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       switch (event.key) {
-        case "x":
+        case controls?.interactuar:
           optionsMenu[indexOptionMenu]?.action();
           break;
         case "Enter":

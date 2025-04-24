@@ -81,7 +81,7 @@ const Step1 = ({
   useEffect(() => {
     const handleKeyDown = async (event: { key: string }) => {
       if (
-        event.key === "a" &&
+        event.key.toLocaleLowerCase() === "a" &&
         finishedTyping &&
         dataDialogue?.length >= indexDialogue + 1
       ) {
@@ -98,15 +98,15 @@ const Step1 = ({
             name: name,
             gender: gender,
           };
-          const initialPokemon = new Pokemon(            
+          const initialPokemon = new Pokemon(
             25,
             pokemonData[25]?.stats?.[0].base_stat,
             1000
-          )
-          console.log(initialPokemon)
+          );
+          console.log(initialPokemon);
           const userResponse = await nuevaPartida(userData);
           const user_id = userResponse.user_id;
-          await addPokemon( user_id, initialPokemon);
+          await addPokemon(user_id, initialPokemon);
           navigate("/world");
         }
       }

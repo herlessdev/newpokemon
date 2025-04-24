@@ -1,5 +1,10 @@
 const mockPartida: UserData = {
-  user: [1, "Mock User", "BOY", 0, 10, "Tue, 29 Oct 2024 18:22:10 GMT"],
+  user: {
+    user_id: 1,
+    name: "Mock User",
+    gender: "BOY",
+    created_at: "Tue, 29 Oct 2024 18:22:10 GMT",
+  },
   pokemons: [
     {
       captured_at: "Tue, 29 Oct 2024 18:22:10 GMT",

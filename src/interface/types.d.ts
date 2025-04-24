@@ -317,7 +317,7 @@ interface UserData {
 }
 
 interface User {
-  createdAt: string; // Puedes cambiarlo a Date si lo parseas después
+  created_at: string; // Puedes cambiarlo a Date si lo parseas después
   gender: "BOY" | "GIRL" | string; // Enum si solo hay valores fijos
   name: string;
   user_id: number;

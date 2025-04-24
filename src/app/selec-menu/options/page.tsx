@@ -4,6 +4,7 @@ import cx from "../../../lib/cx";
 import SelectOpt from "./select-opt";
 import { useContext } from "react";
 import { UserDataContext } from "../../../context/UserDataProvider";
+import { controls } from "../../../data/controllers";
 
 const options = [
   {
@@ -45,7 +46,7 @@ const Options = () => {
     true,
     [
       {
-        key: "x",
+        key: controls?.retroceder,
         optionIndex: options.length - 1, // Índice de la primera opción
         callback: () => {
           if (userData.length === 0) {

@@ -160,7 +160,7 @@ const Duel = () => {
       },
     ],
     [
-      { name: "pokémon", action: () => navigate("/pokemon") },
+      { name: "pokémon", action: () => navigate("/team") },
       {
         name: "run",
         action: () => {
@@ -175,7 +175,6 @@ const Duel = () => {
     ["Impactrueno", "-"],
     ["-", "-"],
   ];
-
   const pokemonsUser = userData?.pokemons?.filter(
     (x: { location: { place: string } }) => x.location.place === "team"
   );
@@ -192,6 +191,8 @@ const Duel = () => {
 
   const [pokemonEnemy] = useState<Pokemon>(initialEnemy);
 
+  console.log(pokemonUserList);
+
   const updateUserDataWithPokemonList = () => {
     const updatedPokemons = userData.pokemons.map(
       (pokemon: { pokemon_id: number | undefined }) => {
@@ -199,7 +200,7 @@ const Duel = () => {
           (p) => p.pokemon_id === pokemon.pokemon_id
         );
 
-        if (updatedPokemon) {
+        if (updatedPokemon) { 
           return {
             ...pokemon, // Mantiene el resto de los datos
             hp: updatedPokemon.stats.current_hp,
@@ -268,6 +269,8 @@ const Duel = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [sequence, selectOpt, selectOptFight, navigate]);
+
+  console.log(pokemonUserList);
 
   //stats
   useEffect(() => {
