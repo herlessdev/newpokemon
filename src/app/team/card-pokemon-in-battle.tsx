@@ -1,6 +1,5 @@
 import { useContext, useEffect } from "react";
 import { PokemonDataContext } from "../../context/PokemonDataProvider";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 interface Props {
   pokemon: any;
@@ -8,22 +7,8 @@ interface Props {
 
 const CardPokemonInBattle = ({ pokemon }: Props) => {
   const pokemonData = useContext(PokemonDataContext);
-  const navigate = useNavigate();
   console.log(pokemon);
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Enter") {
-        navigate("/world");
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+  
   return (
     <div
       style={{

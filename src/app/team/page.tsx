@@ -1,11 +1,14 @@
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { UserDataContext } from "../../context/UserDataProvider";
 import { Pokemon } from "../../data/types";
 import { PokemonDataContext } from "../../context/PokemonDataProvider";
 import CardPokemonInBattle from "./card-pokemon-in-battle";
+import { useNavigate } from "react-router-dom";
+import { controls } from "../../data/controllers";
 
 const Team = () => {
   const { userData } = useContext(UserDataContext);
+  const navigate = useNavigate();
   const pokemonData = useContext<PokemonData[]>(PokemonDataContext);
 
   const team = useMemo(() => {
@@ -39,6 +42,23 @@ const Team = () => {
     return filledTeam.slice(0, 6);
   }, []);
   console.log(team);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event?.key?.toLowerCase() === controls?.menú ||
+        event?.key?.toLowerCase() === controls?.retroceder
+      ) {
+        navigate("/world");
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <section className="bg-[#8c9e29] w-full h-full pl-16 py-6 relative">

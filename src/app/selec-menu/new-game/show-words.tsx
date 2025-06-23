@@ -9,6 +9,7 @@ export default function ShowWords({ name }: Props) {
   const [frameIndex, setFrameIndex] = useState(0);
   const [saltito, setSaltito] = useState(true);
   const frameCount = 3;
+  //falta animar para aura
   const spriteBruno = "/newpokemon/sprites/sprite-bruno-old.png";
 
   useEffect(() => {
