@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { PokemonDataContext } from "../../context/PokemonDataProvider";
 import { motion } from "framer-motion";
 interface Props {

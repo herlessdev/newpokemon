@@ -18,6 +18,7 @@ const Team = () => {
       )
       .map(
         (pokemon: {
+          ivs: any;
           pokemon_number: number;
           xp: number;
           pokemon_id: number | undefined;
